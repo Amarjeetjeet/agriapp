@@ -1,6 +1,9 @@
-import 'package:agriapp/helper/barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../data/helper/barrel.dart';
+import '../../data/router/rounter_config.dart';
 
 class IntroScreen extends StatelessWidget {
   const IntroScreen({super.key});
@@ -46,14 +49,19 @@ class IntroScreen extends StatelessWidget {
                   ),
                   8.h.height(),
                   PrimaryButton(
-                    onTap: () {},
+                    onTap: () {
+                      context.pushNamed(RouterUtil.loginUi);
+                    },
                     btnName: 'Log in',
                   ),
                   2.h.height(),
                   SecondaryButton(
-                    onTap: () {},
+                    onTap: () {
+                      context.pushNamed(RouterUtil.registerUi);
+                    },
                     btnName: 'Sign up',
                   ),
+                  2.h.height(),
                 ],
               ),
             ),
