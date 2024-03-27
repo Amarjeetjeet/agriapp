@@ -2,7 +2,15 @@ class HelperFunctions {
   static int calculateDiscountPercentage(
       String? regularPrice, String? discountPrice) {
     // Check if both regularPrice and discountPrice are provided
+
+
     if (regularPrice == null || discountPrice == null) {
+      return 0;
+      // throw ArgumentError(
+      //     "Both regularPrice and discountPrice must be provided.");
+    }
+
+    if (regularPrice.isEmpty || discountPrice.isEmpty) {
       return 0;
       // throw ArgumentError(
       //     "Both regularPrice and discountPrice must be provided.");

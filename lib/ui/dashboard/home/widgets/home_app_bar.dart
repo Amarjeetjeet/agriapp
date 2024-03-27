@@ -58,9 +58,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                         "Delivery to",
                         style: txtMediumF18cWhite,
                       ),
-                      IconOutlineButton(
-                        onTap: onSuffixIconPress,
-                        icon: Icons.notifications,
+                      IconButton.outlined(
+                        style: buildIconOutlineStyleFrom(),
+                        onPressed: onSuffixIconPress,
+                        icon: SvgHelper(
+                          imagePath: notificationIcon,
+                        ),
                       ),
                     ],
                   ),

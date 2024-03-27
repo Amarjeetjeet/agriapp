@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-sealed class StateApi extends Equatable {
+sealed class StateApi extends Equatable {}
+
+class LoadingState extends StateApi {
   @override
   List<Object?> get props => [];
 }
-
-class LoadingState extends StateApi {}
 
 class SuccessState<T> extends StateApi {
   final T? success;
@@ -20,8 +20,12 @@ class FailureState extends StateApi {
   final String? errorMessage;
 
   FailureState({required this.errorMessage});
+
   @override
   List<Object?> get props => [errorMessage];
 }
 
-class EmptyState extends StateApi {}
+class EmptyState extends StateApi {
+  @override
+  List<Object?> get props => [];
+}

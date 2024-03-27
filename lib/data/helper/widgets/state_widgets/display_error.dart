@@ -8,7 +8,17 @@ class DisplayError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(errorMessage ?? "Something went wrong"),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+        child: Text(
+          errorMessage ?? "Something went wrong",
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
     );
   }
 }

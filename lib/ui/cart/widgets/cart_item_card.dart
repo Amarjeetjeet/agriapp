@@ -3,9 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../data/helper/barrel.dart';
 
 class CartItemCard extends StatelessWidget {
-  const CartItemCard({super.key, required this.widget});
+  const CartItemCard({
+    super.key,
+    required this.widget,
+    this.productName,
+    this.productPrice,
+    this.productImage,
+  });
 
   final Widget widget;
+  final String? productName;
+  final String? productPrice;
+  final String? productImage;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +32,11 @@ class CartItemCard extends StatelessWidget {
               color: cFAFAFA,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  product,
+                child: Image.network(
+                  productImage ?? "",
                   height: 100,
                   width: 200,
+                  errorBuilder: (___,__,_) => const Icon(Icons.error_outline),
                 ),
               ),
             ),
@@ -38,12 +48,12 @@ class CartItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Indo Us Black Gram Rajavi 11",
+                  productName ?? "",
                   style: txtMediumF14c383838,
                 ),
                 10.0.height(),
                 DiscountPrice(
-                  price: "1230",
+                  price: productPrice ?? "",
                 ),
               ],
             ),

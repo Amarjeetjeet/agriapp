@@ -10,7 +10,11 @@ import '../../../../domain/blocs/state_api/state_api.dart';
 import '../../../../domain/models/product/prodct_by_category_response.dart';
 
 class CategoryWiseProducts extends StatelessWidget {
-  const CategoryWiseProducts({super.key, this.categoryName,required this.categoryId});
+  const CategoryWiseProducts({
+    super.key,
+    this.categoryName,
+    required this.categoryId,
+  });
 
   final String? categoryName;
   final int categoryId;
@@ -37,17 +41,15 @@ class CategoryWiseProducts extends StatelessWidget {
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                   padding: const EdgeInsets.all(16),
-                  itemCount: (state.success as List<dynamic>).length,
+                  itemCount: ((state.success as CategoryByProduct).categoryProductList?.productList ?? []).length,
                   itemBuilder: (context, index) {
-                    CategoryByProduct? product =
-                        (state.success as List<dynamic>)[index];
+                    CategoryByProduct? product = state.success;
                     return ProductWidget(
-                      productName: product?.postTitle,
-                      productSalePrice: '110',
-                      productRegularPrice: '1110',
-                      productId: product?.iD,
-                      productFeaturedImage:
-                          "https://agripari.com/wp-content/uploads/2023/04/INDO-US-ASH-GOURD-9999-F1-HY.jpeg",
+                      productName: product?.categoryProductList?.productList?[index].productName ?? "",
+                      productSalePrice: product?.categoryProductList?.productList?[index].productSalePrice ?? "",
+                      productRegularPrice: product?.categoryProductList?.productList?[index].productRegularPrice ?? "",
+                      productId: product?.categoryProductList?.productList?[index].productId ?? 0,
+                      productFeaturedImage: product?.categoryProductList?.productList?[index].productImageFeaturedImageLink ?? "",
                     );
                   },
                 ),

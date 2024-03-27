@@ -40,7 +40,7 @@ class OtpUi extends StatelessWidget {
                 vertical: 16,
               ),
               onCompleted: (pin) {
-                print("Completed: " + pin);
+                debugPrint("Completed: $pin");
               },
             ),
             6.0.h.height(),

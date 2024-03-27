@@ -1,4 +1,7 @@
+import 'package:agriapp/ui/cart/ui/cart_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../barrel.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -16,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
   @override
-  Size get preferredSize => const Size.fromHeight(140);
+  Size get preferredSize => const Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         Image.asset(
           appBar,
           width: MediaQuery.sizeOf(context).width,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.fill,
         ),
         Positioned(
           bottom: 20,
@@ -36,17 +39,55 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconOutlineButton(
-                onTap: onBackPress,
-                icon: prefixIcon,
+              Visibility(
+                visible: context.canPop(),
+                child: InkWell(
+                  onTap: () {
+                    context.pop();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    child: SvgHelper(
+                      imagePath: backBtn,
+                      width: 26,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ),
+                ),
               ),
               Text(
                 title,
                 style: txtMediumF18cWhite,
               ),
-              IconOutlineButton(
-                onTap: onSuffixIconPress,
-                icon: suffixIcon,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const CartUi(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.white,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgHelper(
+                    imagePath: cart,
+                    width: 26,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
               ),
             ],
           ),

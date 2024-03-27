@@ -42,19 +42,18 @@ class _CategoryListAllState extends State<CategoryListAll> {
               );
             },
             contentPadding: const EdgeInsets.all(16),
-            leading: IconButton.outlined(
-              onPressed: () {},
-              style: IconButton.styleFrom(
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.all(16.0),
-                side: BorderSide(
-                  width: 1,
+            leading: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                border: Border.all(
                   color: cD9D9D9,
                 ),
+                shape: BoxShape.circle,
               ),
-              icon: Icon(
-                Icons.person_outline,
-                color: primaryColor,
+              child: Image.asset(
+                catImg,
+                width: 26,
+                fit: BoxFit.fitWidth,
               ),
             ),
             title: Text(

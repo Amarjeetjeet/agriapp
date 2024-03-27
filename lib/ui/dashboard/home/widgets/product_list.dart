@@ -50,7 +50,7 @@ class ProductList extends StatelessWidget {
                 ),
                 1.h.height(),
                 Container(
-                  height: 300,
+                  height: 310,
                   alignment: Alignment.center,
                   child: ListView.builder(
                     itemCount: (state.success as FeaturedProduct)

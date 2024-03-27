@@ -1,11 +1,14 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../helper/constants/key_constants.dart';
-import '../../local/preference_util/PreferenceUtils.dart';
+import '../../local/preference_util/preference_utils.dart';
 import '../app_exceptions/app_exceptions.dart';
 
 class BaseClientApi {
@@ -22,7 +25,7 @@ class BaseClientApi {
       var response = await http.get(uri, headers: {
         "Authorization": "Bearer $token",
       }).timeout(const Duration(seconds: TIME_OUT_DURATION));
-      print(response.body);
+      debugPrint(response.body);
       return _processResponse(response);
     } on SocketException {
       return Future.error('No Internet connection 😢');
@@ -49,8 +52,8 @@ class BaseClientApi {
       var response = await http.post(uri, body: payload, headers: {
         "Authorization": "Bearer $token",
       }).timeout(const Duration(seconds: TIME_OUT_DURATION));
-      print("status code: $response.statusCode");
-      print("body ${response.body}");
+      debugPrint("status code: $response.statusCode");
+      debugPrint("body ${response.body}");
       return _processResponse(response);
     } on SocketException {
       return Future.error('No Internet connection 😢');

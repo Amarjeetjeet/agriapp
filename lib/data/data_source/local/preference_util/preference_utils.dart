@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferenceUtils {
 
+  static String USERID = "userId";
   Future<SharedPreferences> get _instance async =>
       _prefsInstance ??= await SharedPreferences.getInstance();
   static SharedPreferences? _prefsInstance;
@@ -17,13 +18,13 @@ class PreferenceUtils {
   }
 
   static Future<bool> setString(String key, String value) async {
-    var prefs = await _prefsInstance;
+    var prefs = _prefsInstance;
     return prefs?.setString(key, value) ?? Future.value(false);
   }
 
 
   static Future reset() async {
-    var prefs = await _prefsInstance;
+    var prefs = _prefsInstance;
     await prefs?.clear();
   }
 }

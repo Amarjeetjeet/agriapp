@@ -14,7 +14,7 @@ export 'widgets/text_fields/my_label_text_field.dart';
 export 'widgets/scaffolds/auth_scaffold.dart';
 export 'widgets/buttons/icon_outline_btn.dart';
 export 'widgets/app_bar/custom_app_bar.dart';
-export 'widgets/scaffolds/AppScaffold.dart';
+export 'widgets/scaffolds/app_scaffold.dart';
 export 'widgets/texts/original_price.dart';
 export 'widgets/texts/discount_price.dart';
 export 'helper_functions/helper_functions.dart';

@@ -7,7 +7,8 @@ class SvgHelper extends StatelessWidget {
     this.width,
     this.height,
     this.color,
-    required this.imagePath, this.fit,
+    required this.imagePath,
+    this.fit,
   });
 
   final double? width, height;
@@ -21,8 +22,8 @@ class SvgHelper extends StatelessWidget {
       imagePath,
       width: width,
       height: height,
-      color: color,
       fit: fit ?? BoxFit.contain,
+      color: color,
     );
   }
 }

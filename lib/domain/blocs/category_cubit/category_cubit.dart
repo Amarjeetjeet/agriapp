@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/data_source/network/network_calls/category_network_call.dart';
 import '../../../domain/models/category/category_list_response.dart';
+import '../../models/product/prodct_by_category_response.dart';
 import '../state_api/state_api.dart';
 
 class CategoryCubit extends Cubit<StateApi> {
@@ -25,10 +26,10 @@ class CategoryCubit extends Cubit<StateApi> {
 
   Future<void> productByCategory({required int categoryId}) async {
     try {
-      List<dynamic> categoryByProduct =
+      CategoryByProduct categoryByProduct =
       await categoryNetworkModule.productByCategory(categoryId : categoryId);
 
-      if ((categoryByProduct ?? []).isEmpty) {
+      if ((categoryByProduct.categoryProductList?.productList ?? []).isEmpty) {
         return emit(EmptyState());
       }
       emit(SuccessState(success: categoryByProduct));
