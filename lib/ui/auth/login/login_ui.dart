@@ -25,8 +25,8 @@ class _LoginUiState extends State<LoginUi> {
 
   @override
   void initState() {
-    emailController = TextEditingController(text: "hirenp557@gmail.com");
-    passwordController = TextEditingController(text: "4y71nKYpqNUl8B6kfoGA8^x)");
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
     super.initState();
   }
 
@@ -42,8 +42,15 @@ class _LoginUiState extends State<LoginUi> {
           Utils(context).stopLoading();
         }
         if (state.formLoadingState == FormLoadingState.success) {
-          LoginResponse loginResponse = state.success;
-          // PreferenceUtils.setString(PreferenceUtils.USERID, loginResponse?.message);
+          LoginResponse? loginResponse = state.success;
+          var snackBar = SnackBar(
+            content: Text(loginResponse?.message ?? "Login success!!"),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          debugPrint("login response ${loginResponse?.loginUser}");
+          PreferenceUtils.setString(PreferenceUtils.USERID, loginResponse?.loginUser?.id ?? "");
+          PreferenceUtils.setString(PreferenceUtils.USERNAME, loginResponse?.loginUser?.displayName ?? "");
+          PreferenceUtils.setString(PreferenceUtils.USER_RESPONSE, loginResponse?.loginUser?.toString() ?? "");
           context.pushReplacementNamed(RouterUtil.homeUi);
         }
         if (state.formLoadingState == FormLoadingState.failure) {

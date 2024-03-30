@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../../domain/models/category/category_list_response.dart';
 import '../../../../domain/models/product/featured_product_response.dart';
 import '../../../../domain/models/product/prodct_by_category_response.dart';
+import '../../../../domain/models/search/search_response.dart';
 import '../base_client/base_client.dart';
 
 class CategoryNetworkModule {
@@ -173,5 +174,16 @@ class CategoryNetworkModule {
     debugPrint("The product detail is $res");
 
     return LoginResponse.fromJson(res);
+  }
+
+  Future<SearchResponse> searchProduct({required String keyword}) async {
+    final res = await baseClient.post(
+      "search_products.php",
+      {
+        "search": {"keyword": keyword}
+      },
+    );
+
+    return SearchResponse.fromJson(res);
   }
 }

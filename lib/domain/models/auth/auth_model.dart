@@ -3,15 +3,15 @@ class AuthModel {
   String? firstName;
   String? lastName;
   String? userName;
-  String? msg;
-  int? status;
+  String? message;
+  bool? status;
 
   AuthModel(
       {this.iD,
         this.firstName,
         this.lastName,
         this.userName,
-        this.msg,
+        this.message,
         this.status});
 
   AuthModel.fromJson(Map<String, dynamic> json) {
@@ -19,7 +19,7 @@ class AuthModel {
     firstName = json['first_name'];
     lastName = json['last_name'];
     userName = json['user_name'];
-    msg = json['message'];
+    message = json['message'];
     status = json['status'];
   }
 
@@ -29,7 +29,7 @@ class AuthModel {
     data['first_name'] = firstName;
     data['last_name'] = lastName;
     data['user_name'] = userName;
-    data['message'] = msg;
+    data['message'] = message;
     data['status'] = status;
     return data;
   }

@@ -26,11 +26,12 @@ class AuthCubit extends Cubit<FormStateApi> {
         password: password,
       );
 
-      if (loginResponse.status == 1) {
+      if ((loginResponse.status ?? false)) {
         emit(
           state.copyWith(
             formLoadingState: FormLoadingState.success,
             errorMessage: loginResponse.message,
+            success: loginResponse,
           ),
         );
       } else {
@@ -60,23 +61,23 @@ class AuthCubit extends Cubit<FormStateApi> {
       ),
     );
     try {
-
       AuthModel authModel = await networkModule.register(
         registerInput: registerInput,
       );
 
-      if (authModel.status == 1) {
+      if ((authModel.status ?? false)) {
         emit(
           state.copyWith(
             formLoadingState: FormLoadingState.success,
-            errorMessage: authModel.msg,
+            errorMessage: authModel.message,
           ),
         );
       } else {
         emit(
           state.copyWith(
-              formLoadingState: FormLoadingState.failure,
-              errorMessage: authModel.msg),
+            formLoadingState: FormLoadingState.failure,
+            errorMessage: authModel.message,
+          ),
         );
       }
     } catch (e) {
@@ -102,18 +103,18 @@ class AuthCubit extends Cubit<FormStateApi> {
         email: email,
       );
 
-      if (authModel.status == 1) {
+      if ((authModel.status ?? false)) {
         emit(
           state.copyWith(
             formLoadingState: FormLoadingState.success,
-            errorMessage: authModel.msg,
+            errorMessage: authModel.message,
           ),
         );
       } else {
         emit(
           state.copyWith(
             formLoadingState: FormLoadingState.failure,
-            errorMessage: authModel.msg,
+            errorMessage: authModel.message,
           ),
         );
       }
@@ -126,5 +127,4 @@ class AuthCubit extends Cubit<FormStateApi> {
       );
     }
   }
-
 }

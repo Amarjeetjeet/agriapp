@@ -1,7 +1,9 @@
+import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 
 import '../../../../data/helper/barrel.dart';
+import '../../../search_product/search_product.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({
@@ -68,13 +70,28 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ],
                   ),
                   1.6.h.height(),
-                  Text("Good Morning",style: txtMediumF24cWhite,),
-                  Text("Hiren Patel",style: txtMediumF24cWhite,),
+                  Text(
+                    DateTime.now().greeting,
+                    style: txtMediumF24cWhite,
+                  ),
+                  Text(
+                    PreferenceUtils.getString(PreferenceUtils.USERNAME),
+                    style: txtMediumF24cWhite,
+                  ),
                   1.3.h.height(),
                   MyTextField(
+                    readOnly: true,
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const SearchProduct(),
+                        ),
+                      );
+                    },
                     hintText: "Search Menu",
                     prefixIcon: const Icon(Icons.search),
-                   hintStyle: txtRegularF14cWhite,
+                    hintStyle: txtRegularF14cWhite,
                   ),
                 ],
               ),

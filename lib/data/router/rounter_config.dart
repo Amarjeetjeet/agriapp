@@ -1,12 +1,15 @@
+import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
 import 'package:agriapp/ui/auth/auth_cubit/auth_cubit.dart';
 import 'package:agriapp/ui/auth/login/login_ui.dart';
 import 'package:agriapp/ui/auth/password/change_password/change_password_ui.dart';
 import 'package:agriapp/ui/auth/password/forgot_password/forgot_password_ui.dart';
 import 'package:agriapp/ui/auth/password/otp_ui/otp_ui.dart';
 import 'package:agriapp/ui/auth/register/register_ui.dart';
+import 'package:agriapp/ui/splash/splash_screen_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../ui/cart/address/address_ui.dart';
 import '../../ui/dashboard/home/home_ui.dart';
 import '../../ui/dashboard/notifications/notifications_ui.dart';
 import '../../ui/splash/intro_screen.dart';
@@ -29,7 +32,7 @@ class RouterUtil {
       GoRoute(
         path: "/",
         name: "/",
-        builder: (context, state) => const HomeUi(),
+        builder: (context, state) => const SplashScreenUi(),
       ),
       GoRoute(
         path: introScreen,

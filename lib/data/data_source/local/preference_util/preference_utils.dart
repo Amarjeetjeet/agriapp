@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PreferenceUtils {
 
   static String USERID = "userId";
+  static String USERNAME = "userName";
+  static String USER_RESPONSE = "userResponse";
   Future<SharedPreferences> get _instance async =>
       _prefsInstance ??= await SharedPreferences.getInstance();
   static SharedPreferences? _prefsInstance;

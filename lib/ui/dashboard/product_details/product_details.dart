@@ -10,6 +10,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../../../data/helper/barrel.dart';
 import '../../../domain/blocs/cart_cubit/cart_counter.dart';
+import '../../cart/ui/cart_ui.dart';
 
 class ProductDetails extends StatefulWidget {
   const ProductDetails({super.key, required this.productId});
@@ -24,148 +25,159 @@ class _ProductDetailsState extends State<ProductDetails> {
   int selectedIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+      () => context
+          .read<CartCounterCubit>()
+          .getQuantity(productId: widget.productId ?? 0),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CartListCubit(),
       child: BlocProvider(
         create: (context) =>
             ProductDetailCubit()..getProductDetail(productId: widget.productId),
-        child: BlocProvider(
-          create: (context) => CartCounterCubit()
-            ..getQuantity(
-              productId: widget.productId ?? 0,
-            ),
-          child: AppScaffold(
-            appBar: const CustomAppBar(
-              suffixIcon: Icons.shopping_cart_outlined,
-              title: "Product Details",
-            ),
-            bottomNavigationBar: Container(
-              color: Colors.white,
-              height: 110,
-              child: BlocBuilder<ProductDetailCubit, StateApi>(
-                builder: (context, productState) {
-                  if (productState is SuccessState) {
-                    ProductDetail productDetail = productState.success;
-                    return BlocBuilder<CartCounterCubit, int>(
-                      builder: (context, counterState) {
-                        return Row(
-                          children: [
-                            10.0.width(),
-                            if (counterState <= 0) ...[
-                              Flexible(
-                                child: SecondaryButton(
-                                  onTap: () {
-                                    BlocProvider.of<CartListCubit>(context)
-                                        .addItem(
-                                      productId: productDetail
-                                              .productDetails?.productId ??
-                                          0,
-                                      productImage: productDetail.productDetails
-                                                  ?.productImageFeaturedImageLink?[
-                                              0] ??
-                                          "",
-                                      productName: productDetail
-                                              .productDetails?.productName ??
-                                          "N/A",
-                                      discountedPrice: productDetail
-                                              .productDetails?.productPrice ??
-                                          "0",
-                                      regularPrice: productDetail.productDetails
-                                              ?.productRegularPrice ??
-                                          "0",
-                                    );
+        child: AppScaffold(
+          appBar: const CustomAppBar(
+            suffixIcon: Icons.shopping_cart_outlined,
+            title: "Product Details",
+          ),
+          bottomNavigationBar: Container(
+            color: Colors.white,
+            height: 110,
+            child: BlocBuilder<ProductDetailCubit, StateApi>(
+              builder: (context, productState) {
+                if (productState is SuccessState) {
+                  ProductDetail productDetail = productState.success;
+                  return BlocBuilder<CartCounterCubit, int>(
+                    builder: (context, counterState) {
+                      return Row(
+                        children: [
+                          10.0.width(),
+                          if (counterState <= 0) ...[
+                            Flexible(
+                              child: SecondaryButton(
+                                onTap: () {
+                                  BlocProvider.of<CartListCubit>(context)
+                                      .addItem(
+                                    productId: productDetail
+                                            .productDetails?.productId ??
+                                        0,
+                                    productImage: productDetail.productDetails
+                                                ?.productImageFeaturedImageLink?[
+                                            0] ??
+                                        "",
+                                    productName: productDetail
+                                            .productDetails?.productName ??
+                                        "N/A",
+                                    discountedPrice: productDetail
+                                            .productDetails?.productPrice ??
+                                        "0",
+                                    regularPrice: productDetail.productDetails
+                                            ?.productRegularPrice ??
+                                        "0",
+                                  );
 
-                                    BlocProvider.of<CartCounterCubit>(context)
-                                        .getQuantity(
-                                      productId: productDetail
-                                              .productDetails?.productId ??
-                                          0,
-                                    );
-                                  },
-                                  btnName: "Add To Cart",
-                                ),
+                                  BlocProvider.of<CartCounterCubit>(context)
+                                      .getQuantity(
+                                    productId: productDetail
+                                            .productDetails?.productId ??
+                                        0,
+                                  );
+                                },
+                                btnName: "Add To Cart",
                               ),
-                            ],
-                            if (counterState > 0) ...[
-                              Flexible(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    RoundedIconBtn(
-                                        iconData: Icons.remove,
-                                        onTap: () {
-                                          BlocProvider.of<CartListCubit>(
-                                                  context)
-                                              .decrementQuantity(
-                                            widget.productId ?? 0,
-                                          );
-                                          BlocProvider.of<CartCounterCubit>(
-                                                  context)
-                                              .getQuantity(
-                                            productId: productDetail
-                                                    .productDetails
-                                                    ?.productId ??
-                                                0,
-                                          );
-                                        }),
-                                    Text(
-                                      counterState.toString(),
-                                      style: txtSemiBoldF24c383838,
-                                    ),
-                                    RoundedIconBtn(
-                                      iconData: Icons.add,
+                            ),
+                          ],
+                          if (counterState > 0) ...[
+                            Flexible(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  RoundedIconBtn(
+                                      iconData: Icons.remove,
                                       onTap: () {
-                                        BlocProvider.of<CartListCubit>(context)
-                                            .incrementQuantity(
+                                        BlocProvider.of<CartListCubit>(
+                                                context)
+                                            .decrementQuantity(
                                           widget.productId ?? 0,
                                         );
                                         BlocProvider.of<CartCounterCubit>(
                                                 context)
                                             .getQuantity(
                                           productId: productDetail
-                                                  .productDetails?.productId ??
+                                                  .productDetails
+                                                  ?.productId ??
                                               0,
                                         );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                            10.0.width(),
-                            Flexible(
-                              child: PrimaryButton(
-                                onTap: () {},
-                                btnName: "Go To Cart",
+                                      }),
+                                  Text(
+                                    counterState.toString(),
+                                    style: txtSemiBoldF24c383838,
+                                  ),
+                                  RoundedIconBtn(
+                                    iconData: Icons.add,
+                                    onTap: () {
+                                      BlocProvider.of<CartListCubit>(context)
+                                          .incrementQuantity(
+                                        widget.productId ?? 0,
+                                      );
+                                      BlocProvider.of<CartCounterCubit>(
+                                              context)
+                                          .getQuantity(
+                                        productId: productDetail
+                                                .productDetails?.productId ??
+                                            0,
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                            10.0.width(),
                           ],
-                        );
-                      },
-                    );
-                  }
-                  return Container();
-                },
-              ),
-            ),
-            body: BlocBuilder<ProductDetailCubit, StateApi>(
-              builder: (context, productDetailState) {
-                return switch (productDetailState) {
-                  LoadingState() => const Loader(),
-                  FailureState() => DisplayError(
-                      errorMessage: productDetailState.errorMessage,
-                    ),
-                  EmptyState() => const DisplayError(
-                      errorMessage: "Empty details",
-                    ),
-                  SuccessState() =>
-                    buildProductBody(productDetailState.success),
-                };
+                          10.0.width(),
+                          Flexible(
+                            child: PrimaryButton(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => const CartUi(),
+                                  ),
+                                );
+                              },
+                              btnName: "Go To Cart",
+                            ),
+                          ),
+                          10.0.width(),
+                        ],
+                      );
+                    },
+                  );
+                }
+                return Container();
               },
             ),
+          ),
+          body: BlocBuilder<ProductDetailCubit, StateApi>(
+            builder: (context, productDetailState) {
+              return switch (productDetailState) {
+                LoadingState() => const Loader(),
+                FailureState() => DisplayError(
+                    errorMessage: productDetailState.errorMessage,
+                  ),
+                EmptyState() => const DisplayError(
+                    errorMessage: "Empty details",
+                  ),
+                SuccessState() =>
+                  buildProductBody(productDetailState.success),
+              };
+            },
           ),
         ),
       ),

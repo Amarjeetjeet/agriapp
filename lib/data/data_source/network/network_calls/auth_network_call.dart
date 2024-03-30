@@ -14,7 +14,7 @@ class AuthNetworkModule {
       "user_login.php",
       {
         "login": {
-          "user_name": email,
+          "user_email": email,
           "password": password,
         }
       },

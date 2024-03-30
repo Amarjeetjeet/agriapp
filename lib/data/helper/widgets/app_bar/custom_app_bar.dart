@@ -14,7 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
   });
 
-  final IconData prefixIcon, suffixIcon;
+  final IconData? prefixIcon, suffixIcon;
   final void Function()? onBackPress, onSuffixIconPress;
   final String title;
 

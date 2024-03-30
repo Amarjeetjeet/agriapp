@@ -7,7 +7,9 @@ class MyTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     this.prefixIcon,
+    this.onTap,
     this.hintStyle, this.controller, this.validator, this.keyboardType,
+    this.readOnly = false
   });
 
   final String hintText;
@@ -16,14 +18,18 @@ class MyTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final void Function()? onTap;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      onTap: onTap,
+      readOnly: readOnly,
       validator: validator,
       keyboardType : keyboardType,
-      decoration: InputDecoration(
+      decoration:  InputDecoration(
         hintText: hintText,
         prefixIcon: prefixIcon,
         prefixIconConstraints: const BoxConstraints(
