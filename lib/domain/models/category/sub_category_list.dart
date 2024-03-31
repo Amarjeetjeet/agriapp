@@ -1,10 +1,10 @@
-class CategoryListResponse {
+class SubCategoryListResponse {
   ProductCategries? productCategries;
   bool? status;
 
-  CategoryListResponse({this.productCategries, this.status});
+  SubCategoryListResponse({this.productCategries, this.status});
 
-  CategoryListResponse.fromJson(Map<String, dynamic> json) {
+  SubCategoryListResponse.fromJson(Map<String, dynamic> json) {
     productCategries = json['product_categries'] != null
         ? ProductCategries.fromJson(json['product_categries'])
         : null;

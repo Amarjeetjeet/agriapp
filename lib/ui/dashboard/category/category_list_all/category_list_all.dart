@@ -25,10 +25,10 @@ class _CategoryListAllState extends State<CategoryListAll> {
         },
       ),
       body: ListView.separated(
-        itemCount: (widget.categoryListResponse?.productCategries ?? []).length,
+        itemCount: (widget.categoryListResponse?.productCategries?.category ?? []).length,
         itemBuilder: (c, i) {
-          ProductCategries? productCategory =
-              widget.categoryListResponse?.productCategries?[i];
+          Category? productCategory =
+              widget.categoryListResponse?.productCategries?.category?[i];
           return ListTile(
             onTap: () {
               Navigator.push(
@@ -50,14 +50,20 @@ class _CategoryListAllState extends State<CategoryListAll> {
                 ),
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(
-                catImg,
-                width: 26,
-                fit: BoxFit.fitWidth,
+              child: Image.network(
+                productCategory?.image ?? "",
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+                errorBuilder: (___, __ , _) => Image.asset(
+                  catImg,
+                  width: 26,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
             ),
             title: Text(
-              productCategory?.catName ?? "",
+              productCategory?.name ?? "",
               style: txtRegularF16cBlack,
             ),
             trailing: const Icon(Icons.arrow_forward_ios),

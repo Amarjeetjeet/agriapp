@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import '../../barrel.dart';
 
 class AppScaffold extends StatelessWidget {
-  const AppScaffold({super.key, required this.body, this.appBar, this.bottomNavigationBar});
+  const AppScaffold(
+      {super.key,
+      required this.body,
+      this.drawer,
+      this.appBar,
+      this.bottomNavigationBar});
 
   final Widget body;
   final Widget? bottomNavigationBar;
+  final Widget? drawer;
   final PreferredSizeWidget? appBar;
 
   @override
@@ -20,10 +26,12 @@ class AppScaffold extends StatelessWidget {
           opacity: const AlwaysStoppedAnimation(.97),
         ),
         Scaffold(
+          drawerEnableOpenDragGesture: false,
           bottomNavigationBar: bottomNavigationBar,
           backgroundColor: Colors.transparent,
           appBar: appBar,
           body: body,
+          drawer: drawer,
         ),
       ],
     );

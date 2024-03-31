@@ -74,7 +74,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     decoration: InputDecoration(
                       hintText: "Search Menu",
-                      prefixIcon: const Icon(Icons.search),
+                      prefixIcon: SvgHelper(imagePath: search),
                       prefixIconConstraints: const BoxConstraints(
                         minWidth: 60,
                       ),

@@ -1,4 +1,5 @@
 import 'package:agriapp/data/helper/barrel.dart';
+import 'package:agriapp/ui/dashboard/home/widgets/home_drawer.dart';
 import 'package:agriapp/ui/dashboard/home/widgets/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,15 +21,29 @@ class HomeUi extends StatefulWidget {
 
 class _HomeUiState extends State<HomeUi> {
   final List<String> featuredProductCategoryList = ["96", "683", "714"];
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
+      key: _key,
       appBar: HomeAppBar(
-        onSuffixIconPress: (){
+        onSuffixIconPress: () {
           context.pushNamed(RouterUtil.notificationUi);
         },
+        menu: Builder(
+          builder: (context) {
+            return IconButton.outlined(
+              style: buildIconOutlineStyleFrom(),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: SvgHelper(
+                imagePath: menu,
+              ),
+            );
+          }
+        ),
       ),
+      drawer: const HomeDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),

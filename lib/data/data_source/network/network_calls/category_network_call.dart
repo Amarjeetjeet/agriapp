@@ -4,6 +4,7 @@ import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain/models/category/category_list_response.dart';
+import '../../../../domain/models/category/sub_category_list.dart';
 import '../../../../domain/models/product/featured_product_response.dart';
 import '../../../../domain/models/product/prodct_by_category_response.dart';
 import '../../../../domain/models/search/search_response.dart';
@@ -17,6 +18,7 @@ class CategoryNetworkModule {
       "product_categories_list.php",
       {},
     );
+    debugPrint("Res is $res");
     return CategoryListResponse.fromJson(res);
     // return CategoryListResponse.fromJson({
     //   "product_categries": [
@@ -148,6 +150,18 @@ class CategoryNetworkModule {
     );
 
     return CategoryByProduct.fromJson(res);
+  }
+
+  Future<SubCategoryListResponse> subCategory({required int categoryId}) async {
+    debugPrint("category id is $categoryId");
+    var res = await baseClient.post(
+      "sub_category.php",
+      {
+        "sub_categories": {"category_id": categoryId},
+      },
+    );
+
+    return SubCategoryListResponse.fromJson(res);
   }
 
   Future<ProductDetail> getProductDetail({required int? productId}) async {

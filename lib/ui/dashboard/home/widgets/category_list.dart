@@ -7,7 +7,7 @@ import '../../../../domain/blocs/category_cubit/category_cubit.dart';
 import '../../../../domain/blocs/state_api/state_api.dart';
 import '../../../../domain/models/category/category_list_response.dart';
 import '../../category/category_list_all/category_list_all.dart';
-import '../../category/category_wise_product/category_wise_products.dart';
+import '../../category/sub_category_list/sub_category_list.dart';
 import 'header_with_button.dart';
 
 class CategoryList extends StatelessWidget {
@@ -48,57 +48,69 @@ class CategoryList extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: (state.success as CategoryListResponse)
                         .productCategries
+                        ?.category
                         ?.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (c, i) {
-                      ProductCategries? productCategory =
+                      Category? productCategory =
                           (state.success as CategoryListResponse)
-                              .productCategries?[i];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CategoryWiseProducts(
-                                  categoryId: productCategory?.catID ?? 0,
-                                  categoryName: productCategory?.catName,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              IconButton.outlined(
-                                onPressed: null,
-                                style: IconButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.all(16.0),
-                                  side: BorderSide(
-                                    width: 1,
-                                    color: cD9D9D9,
+                              .productCategries
+                              ?.category?[i];
+                      return Visibility(
+                        visible: productCategory?.parent == 0,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: InkWell(
+                            onTap: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SubCategoryList(
+                                    categoryId: productCategory?.catID ?? 0,
+                                    categoryName: productCategory?.catName ?? "",
                                   ),
                                 ),
-                                icon: Image.asset(
-                                  catImg,
-                                  width: 40,
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                IconButton.outlined(
+                                  onPressed: null,
+                                  style: IconButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.all(16.0),
+                                    side: BorderSide(
+                                      width: 1,
+                                      color: cD9D9D9,
+                                    ),
+                                  ),
+                                  icon: Image.network(
+                                    productCategory?.image ?? "",
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (c, i, s) => Image.asset(
+                                      catImg,
+                                      width: 40,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              1.h.height(),
-                              SizedBox(
-                                width: 80,
-                                child: Text(
-                                  productCategory?.catName ?? "",
-                                  textAlign: TextAlign.center,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
+                                1.h.height(),
+                                SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    productCategory?.name ?? "",
+                                    textAlign: TextAlign.center,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -107,7 +119,7 @@ class CategoryList extends StatelessWidget {
                 ),
               ],
             ),
-          FailureState() => const SizedBox(),
+          FailureState() => Text(state.errorMessage.toString()),
           EmptyState() => const SizedBox(),
         };
       },
