@@ -30,7 +30,7 @@ class CategoryCubit extends Cubit<StateApi> {
       CategoryByProduct categoryByProduct =
       await categoryNetworkModule.productByCategory(categoryId : categoryId);
 
-      if ((categoryByProduct.categoryProductList?.productList ?? []).isEmpty) {
+      if ((categoryByProduct.categoryProductList?.product ?? []).isEmpty) {
         return emit(EmptyState());
       }
       emit(SuccessState(success: categoryByProduct));

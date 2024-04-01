@@ -41,15 +41,52 @@ class CategoryWiseProducts extends StatelessWidget {
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 8,
                   padding: const EdgeInsets.all(16),
-                  itemCount: ((state.success as CategoryByProduct).categoryProductList?.productList ?? []).length,
+                  itemCount: ((state.success as CategoryByProduct)
+                              .categoryProductList
+                              ?.product ??
+                          [])
+                      .length,
                   itemBuilder: (context, index) {
                     CategoryByProduct? product = state.success;
+                    if (product?.categoryProductList?.product?[index]
+                            .isVariationProduct ??
+                        false) {
+                      return ProductWidget(
+                        productName: product?.categoryProductList
+                                ?.product?[index].productName ??
+                            "",
+                        productSalePrice: product?.categoryProductList
+                                ?.product?[index].variation?[0].productRegularPrice ??
+                            "",
+                        productRegularPrice: product?.categoryProductList
+                                ?.product?[index].productRegularPrice ??
+                            "",
+                        productId: product?.categoryProductList?.product?[index]
+                                .productId ??
+                            0,
+                        productFeaturedImage: product
+                                ?.categoryProductList
+                                ?.product?[index]
+                                .productImageFeaturedImageLink ??
+                            "",
+                      );
+                    }
                     return ProductWidget(
-                      productName: product?.categoryProductList?.productList?[index].productName ?? "",
-                      productSalePrice: product?.categoryProductList?.productList?[index].productSalePrice ?? "",
-                      productRegularPrice: product?.categoryProductList?.productList?[index].productRegularPrice ?? "",
-                      productId: product?.categoryProductList?.productList?[index].productId ?? 0,
-                      productFeaturedImage: product?.categoryProductList?.productList?[index].productImageFeaturedImageLink ?? "",
+                      productName: product?.categoryProductList?.product?[index]
+                              .productName ??
+                          "",
+                      productSalePrice: product?.categoryProductList
+                              ?.product?[index].productSalePrice ??
+                          "",
+                      productRegularPrice: product?.categoryProductList
+                              ?.product?[index].productRegularPrice ??
+                          "",
+                      productId: product?.categoryProductList?.product?[index]
+                              .productId ??
+                          0,
+                      productFeaturedImage: product?.categoryProductList
+                              ?.product?[index].productImageFeaturedImageLink ??
+                          "",
                     );
                   },
                 ),

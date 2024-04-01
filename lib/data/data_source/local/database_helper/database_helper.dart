@@ -92,4 +92,8 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getCartItems() async {
     return await _database!.query(_tableName);
   }
+
+  static Future<void> clearCart() async {
+    await _database?.delete(_tableName);
+  }
 }

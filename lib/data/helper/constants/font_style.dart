@@ -47,6 +47,12 @@ TextStyle txtRegularF16c383838 = GoogleFonts.poppins(
   fontWeight: FontWeight.w400,
 );
 
+TextStyle txtRegularF16cWhite = GoogleFonts.poppins(
+  fontSize: 16.dp,
+  color: Colors.white,
+  fontWeight: FontWeight.w400,
+);
+
 TextStyle txtRegularF16cBlack = GoogleFonts.poppins(
   fontSize: 16.dp,
   color: Colors.black,
@@ -110,6 +116,11 @@ TextStyle txtMediumF16cPrimary = GoogleFonts.poppins(
 TextStyle txtMediumF20c383838 = GoogleFonts.poppins(
   fontSize: 20.dp,
   color: c383838,
+  fontWeight: FontWeight.w500,
+);
+TextStyle txtMediumF20cWhite = GoogleFonts.poppins(
+  fontSize: 20.dp,
+  color: Colors.white,
   fontWeight: FontWeight.w500,
 );
 
