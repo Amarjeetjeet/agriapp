@@ -1,3 +1,6 @@
+import 'package:agriapp/domain/models/product/prodct_by_category_response.dart';
+import 'package:flutter/cupertino.dart';
+
 class ProductDetail {
   ProductDetails? productDetails;
 
@@ -60,51 +63,62 @@ class ProductDetails {
   bool? productReviewsAllowed;
   String? productAverageRating;
   int? productReviewCount;
+  List<Variation>? variation;
+  List<String>? featureImagesList;
 
-  ProductDetails(
-      {this.productId,
-        this.productType,
-        this.productName,
-        this.productSlug,
-        this.productStatus,
-        this.productFeatured,
-        this.productVisibility,
-        this.productDescription,
-        this.productShortDescription,
-        this.productSku,
-        this.productMenuOrder,
-        this.productVirtual,
-        this.productLink,
-        this.productPrice,
-        this.productRegularPrice,
-        this.productSalePrice,
-        this.productTotalSales,
-        this.productTaxStatus,
-        this.productTaxClass,
-        this.productManageStock,
-        this.productStockStatus,
-        this.productBackorders,
-        this.productSoldIndividually,
-        this.productPurchaseNote,
-        this.productShippingClassId,
-        this.productWeight,
-        this.productLength,
-        this.productWidth,
-        this.productHeight,
-        this.productDimensions,
-        this.productParentId,
-        this.productAttributeid,
-        this.productCategoryIds,
-        this.productDownloadExpiry,
-        this.productDownloadable,
-        this.productDownloadLimit,
-        this.productImageFeaturedImageLink,
-        this.productGalleryImageIds,
-        this.productReviewsAllowed,
-        this.productAverageRating,
-        this.productReviewCount});
+  bool? get isVariationProduct {
+    return variation != null && (variation ?? []).isNotEmpty;
+  }
+
+  ProductDetails({
+    this.productId,
+    this.productType,
+    this.productName,
+    this.productSlug,
+    this.productStatus,
+    this.productFeatured,
+    this.productVisibility,
+    this.productDescription,
+    this.productShortDescription,
+    this.productSku,
+    this.productMenuOrder,
+    this.productVirtual,
+    this.productLink,
+    this.productPrice,
+    this.productRegularPrice,
+    this.productSalePrice,
+    this.productTotalSales,
+    this.productTaxStatus,
+    this.productTaxClass,
+    this.productManageStock,
+    this.productStockStatus,
+    this.productBackorders,
+    this.productSoldIndividually,
+    this.productPurchaseNote,
+    this.productShippingClassId,
+    this.productWeight,
+    this.productLength,
+    this.productWidth,
+    this.productHeight,
+    this.productDimensions,
+    this.productParentId,
+    this.productAttributeid,
+    this.productCategoryIds,
+    this.productDownloadExpiry,
+    this.productDownloadable,
+    this.productDownloadLimit,
+    this.productImageFeaturedImageLink,
+    this.productGalleryImageIds,
+    this.productReviewsAllowed,
+    this.productAverageRating,
+    this.productReviewCount,
+    this.variation,
+    this.featureImagesList,
+  });
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
+    featureImagesList = <String>[];
+
     productId = json['product_id'];
     productType = json['product_type'];
     productName = json['product_name'];
@@ -145,6 +159,27 @@ class ProductDetails {
     productReviewsAllowed = json['product_reviews_allowed'];
     productAverageRating = json['product_average_rating'];
     productReviewCount = json['product_review_count'];
+    // if (json['product_image_featured_image_link'] != null) {
+    //   debugPrint(
+    //       "Feature image is ${json['product_image_featured_image_link'][0]}");
+    //   json['product_image_featured_image_link'].asMap().forEach((index, value) {
+    //     featureImagesList
+    //         ?.add(json['product_image_featured_image_link'][0]);
+    //   });
+    // }
+    if (json['variation'] != null) {
+      variation = <Variation>[];
+      json['variation'].forEach((v) {
+        variation!.add(Variation.fromJson(v));
+      });
+    }
+    if (json['product_gallery_image_ids'] != null) {
+      featureImagesList
+          ?.add(json['product_image_featured_image_link'][0]);
+      json['product_gallery_image_ids'].asMap().forEach((index, value) {
+        featureImagesList?.add(json["$index"]["product_image_link"]);
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -185,8 +220,7 @@ class ProductDetails {
     data['product_download_expiry'] = productDownloadExpiry;
     data['product_downloadable'] = productDownloadable;
     data['product_download_limit'] = productDownloadLimit;
-    data['product_image_featured_image_link'] =
-        productImageFeaturedImageLink;
+    data['product_image_featured_image_link'] = productImageFeaturedImageLink;
     data['product_gallery_image_ids'] = productGalleryImageIds;
     data['product_reviews_allowed'] = productReviewsAllowed;
     data['product_average_rating'] = productAverageRating;

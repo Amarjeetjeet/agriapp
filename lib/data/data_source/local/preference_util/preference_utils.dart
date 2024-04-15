@@ -5,6 +5,7 @@ class PreferenceUtils {
   static String USERID = "userId";
   static String USERNAME = "userName";
   static String USER_RESPONSE = "userResponse";
+  static String USER_EMAIL = "userEmail";
   Future<SharedPreferences> get _instance async =>
       _prefsInstance ??= await SharedPreferences.getInstance();
   static SharedPreferences? _prefsInstance;

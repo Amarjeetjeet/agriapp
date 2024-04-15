@@ -8,7 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     this.prefixIcon = Icons.arrow_back_ios_new_rounded,
-    required this.suffixIcon,
+    this.suffixIcon,
     this.onBackPress,
     this.onSuffixIconPress,
     required this.title,

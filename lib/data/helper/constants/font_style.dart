@@ -70,6 +70,11 @@ TextStyle txtRegularF14c383838 = GoogleFonts.poppins(
   color: c383838,
   fontWeight: FontWeight.w400,
 );
+TextStyle txtRegularF12c8C8C8C = GoogleFonts.poppins(
+  fontSize: 12.dp,
+  color: c8C8C8C,
+  fontWeight: FontWeight.w400,
+);
 
 TextStyle txtRegularF14c7C7C7C = GoogleFonts.poppins(
   fontSize: 14.dp,

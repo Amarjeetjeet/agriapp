@@ -8,6 +8,7 @@ import '../../../../data/helper/barrel.dart';
 import '../../../../domain/blocs/category_cubit/category_cubit.dart';
 import '../../../../domain/blocs/state_api/state_api.dart';
 import '../../../../domain/models/product/prodct_by_category_response.dart';
+import '../../product_details/product_variation_widget.dart';
 
 class CategoryWiseProducts extends StatelessWidget {
   const CategoryWiseProducts({
@@ -27,7 +28,7 @@ class CategoryWiseProducts extends StatelessWidget {
       child: AppScaffold(
         appBar: CustomAppBar(
           suffixIcon: Icons.shopping_cart_outlined,
-          title: categoryName ?? "",
+          title: (categoryName ?? "").toUpperCase(),
           onBackPress: () => context.pop(),
         ),
         body: BlocBuilder<CategoryCubit, StateApi>(
@@ -51,15 +52,22 @@ class CategoryWiseProducts extends StatelessWidget {
                     if (product?.categoryProductList?.product?[index]
                             .isVariationProduct ??
                         false) {
-                      return ProductWidget(
+                      return ProductVariationWidget(
                         productName: product?.categoryProductList
                                 ?.product?[index].productName ??
                             "",
-                        productSalePrice: product?.categoryProductList
-                                ?.product?[index].variation?[0].productRegularPrice ??
+                        productMinPrice: product
+                                ?.categoryProductList
+                                ?.product?[index]
+                                .variation?[0]
+                                .productSalePrice ??
                             "",
-                        productRegularPrice: product?.categoryProductList
-                                ?.product?[index].productRegularPrice ??
+                        productMaxPrice: product
+                                ?.categoryProductList
+                                ?.product?[index]
+                                .variation
+                                ?.last
+                                .productSalePrice ??
                             "",
                         productId: product?.categoryProductList?.product?[index]
                                 .productId ??
@@ -68,6 +76,12 @@ class CategoryWiseProducts extends StatelessWidget {
                                 ?.categoryProductList
                                 ?.product?[index]
                                 .productImageFeaturedImageLink ??
+                            "",
+                        productMinRegular: product
+                                ?.categoryProductList
+                                ?.product?[index]
+                                .variation?[0]
+                                .productRegularPrice ??
                             "",
                       );
                     }

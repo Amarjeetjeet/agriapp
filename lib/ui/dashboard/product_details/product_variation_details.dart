@@ -1,5 +1,6 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
+import 'package:agriapp/domain/models/product/prodct_by_category_response.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_detail_cubit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,17 +13,21 @@ import '../../../data/helper/barrel.dart';
 import '../../../domain/blocs/cart_cubit/cart_counter.dart';
 import '../../cart/ui/cart_ui.dart';
 
-class ProductDetails extends StatefulWidget {
-  const ProductDetails({super.key, required this.productId});
+class ProductVariationDetails extends StatefulWidget {
+  const ProductVariationDetails({super.key, required this.productId});
 
   final int? productId;
 
   @override
-  State<ProductDetails> createState() => _ProductDetailsState();
+  State<ProductVariationDetails> createState() =>
+      _ProductVariationDetailsState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> {
+class _ProductVariationDetailsState extends State<ProductVariationDetails> {
   int selectedIndex = 0;
+
+  String? productPrice;
+  int? productID;
 
   @override
   void initState() {
@@ -30,7 +35,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     Future.microtask(
       () => context
           .read<CartCounterCubit>()
-          .getQuantity(productId: widget.productId ?? 0),
+          .getQuantity(productId: productID ?? 0),
     );
   }
 
@@ -62,11 +67,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                             Flexible(
                               child: SecondaryButton(
                                 onTap: () {
+                                  if (productPrice == null) {
+                                    var snackBar = const SnackBar(
+                                      content:
+                                          Text("Please select quantity first!"),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    return;
+                                  }
                                   BlocProvider.of<CartListCubit>(context)
                                       .addItem(
-                                    productId: productDetail
-                                            .productDetails?.productId ??
-                                        0,
+                                    productId: productID ?? 0,
                                     productImage: productDetail.productDetails
                                                 ?.productImageFeaturedImageLink?[
                                             0] ??
@@ -74,17 +86,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     productName: productDetail
                                             .productDetails?.productName ??
                                         "N/A",
-                                    discountedPrice: productDetail
+                                    discountedPrice: productPrice ?? "0",
+                                    regularPrice: productDetail
                                             .productDetails?.productPrice ??
-                                        "0",
-                                    regularPrice: productDetail.productDetails
-                                            ?.productRegularPrice ??
                                         "0",
                                   );
 
                                   BlocProvider.of<CartCounterCubit>(context)
                                       .getQuantity(
-                                    productId:productDetail.productDetails?.productId ?? 0,
+                                    productId: productID,
                                   );
                                 },
                                 btnName: "Add To Cart",
@@ -102,12 +112,12 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       onTap: () {
                                         BlocProvider.of<CartListCubit>(context)
                                             .decrementQuantity(
-                                          widget.productId ?? 0,
+                                          productID ?? 0,
                                         );
                                         BlocProvider.of<CartCounterCubit>(
                                                 context)
                                             .getQuantity(
-                                          productId:productDetail.productDetails?.productId ?? 0,
+                                          productId: productID,
                                         );
                                       }),
                                   Text(
@@ -119,11 +129,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     onTap: () {
                                       BlocProvider.of<CartListCubit>(context)
                                           .incrementQuantity(
-                                        widget.productId ?? 0,
+                                        productID ?? 0,
                                       );
                                       BlocProvider.of<CartCounterCubit>(context)
                                           .getQuantity(
-                                        productId:productDetail.productDetails?.productId ?? 0,
+                                        productId: productID,
                                       );
                                     },
                                   ),
@@ -188,7 +198,6 @@ class _ProductDetailsState extends State<ProductDetails> {
             CarouselSlider(
               options: CarouselOptions(
                 height: 250.0,
-                enableInfiniteScroll: false,
                 viewportFraction: 1,
                 onPageChanged: (page, _) {
                   setState(() {
@@ -197,14 +206,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                 },
               ),
               items:
-                  (productDetail?.productDetails?.featureImagesList ?? [])
-                      .map((image) {
-                    debugPrint("The featureList is ${image}");
-
-                    return Builder(
+                  (productDetail?.productDetails?.productGalleryImageIds ?? [])
+                      .map((i) {
+                return Builder(
                   builder: (BuildContext context) {
                     return Image.network(
-                      image ??
+                      productDetail?.productDetails
+                              ?.productImageFeaturedImageLink?[0] ??
                           "",
                       fit: BoxFit.cover,
                     );
@@ -216,7 +224,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             Center(
               child: DotsIndicator(
                 dotsCount:
-                    (productDetail?.productDetails?.featureImagesList ??
+                    (productDetail?.productDetails?.productGalleryImageIds ??
                             [])
                         .length,
                 position: selectedIndex,
@@ -234,19 +242,49 @@ class _ProductDetailsState extends State<ProductDetails> {
               style: txtMediumF18c38383,
             ),
             10.0.height(),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                OriginalPrice(
-                  price: productDetail?.productDetails?.productRegularPrice,
-                  font18: true,
-                ),
-                20.0.width(),
-                DiscountPrice(
-                  price: productDetail?.productDetails?.productPrice,
-                  font18: true,
-                ),
-              ],
+            DiscountPrice(
+              price: productPrice ??
+                  "${productDetail?.productDetails?.variation?[0].productSalePrice} - "
+                      "\u{20B9}${productDetail?.productDetails?.variation?.last.productSalePrice}",
+              font18: true,
+            ),
+            10.0.height(),
+            DropdownButtonFormField<Variation>(
+              hint: const Text("Select options "),
+              items: (productDetail?.productDetails?.variation ?? [])
+                  .map((Variation items) {
+                return DropdownMenuItem(
+                  value: items,
+                  child: Row(
+                    children: [
+                      Text(
+                        items.productVariationAttributes?.attributePa10gm ?? "",
+                        style: txtMediumF14c383838,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      DiscountPrice(
+                        price: items.productSalePrice,
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+              validator: (value) {
+                if ((productPrice ?? "").isEmpty) {
+                  return "Select quantity first";
+                }
+              },
+              onChanged: (Variation? newValue) {
+                setState(() {
+                  productPrice = (newValue?.productSalePrice ?? "");
+                  productID = newValue?.productVariationId ?? 0;
+                });
+                context
+                    .read<CartCounterCubit>()
+                    .getQuantity(productId: productID ?? 0);
+              },
             ),
             25.0.height(),
             Text(

@@ -7,6 +7,7 @@ import '../../../../domain/blocs/category_cubit/category_cubit.dart';
 import '../../../../domain/blocs/state_api/state_api.dart';
 import '../../../../domain/models/category/category_list_response.dart';
 import '../../category/category_list_all/category_list_all.dart';
+import '../../category/category_wise_product/category_wise_products.dart';
 import '../../category/sub_category_list/sub_category_list.dart';
 import 'header_with_button.dart';
 
@@ -62,14 +63,44 @@ class CategoryList extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 16.0),
                           child: InkWell(
                             onTap: () {
-
+                              if ((productCategory?.slug ?? "")
+                                      .toUpperCase() ==
+                                  "OFFERS") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CategoryWiseProducts(
+                                      categoryId: productCategory?.catID ?? 0,
+                                      categoryName: productCategory?.slug,
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if ((productCategory?.slug ?? "")
+                                      .toUpperCase() ==
+                                  "TRAPS-AND-LURES") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        CategoryWiseProducts(
+                                      categoryId: productCategory?.catID ?? 0,
+                                      categoryName: productCategory?.slug,
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (BuildContext context) =>
                                       SubCategoryList(
                                     categoryId: productCategory?.catID ?? 0,
-                                    categoryName: productCategory?.catName ?? "",
+                                    categoryName:
+                                        productCategory?.slug ?? "",
                                   ),
                                 ),
                               );
@@ -103,7 +134,7 @@ class CategoryList extends StatelessWidget {
                                 SizedBox(
                                   width: 80,
                                   child: Text(
-                                    productCategory?.name ?? "",
+                                    (productCategory?.slug ?? "").toUpperCase(),
                                     textAlign: TextAlign.center,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,

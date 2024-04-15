@@ -16,6 +16,11 @@ class OrderInput {
     }
     return data;
   }
+
+  @override
+  String toString() {
+    return 'OrderInput{createOrder: $createOrder}';
+  }
 }
 
 class CreateOrder {

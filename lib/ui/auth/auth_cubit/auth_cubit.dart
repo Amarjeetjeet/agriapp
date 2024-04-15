@@ -9,7 +9,6 @@ import '../../../domain/models/auth/register_input.dart';
 class AuthCubit extends Cubit<FormStateApi> {
   AuthCubit() : super(const FormStateApi());
 
-  AuthNetworkModule networkModule = AuthNetworkModule();
 
   Future<void> login({
     required String email,
@@ -21,7 +20,7 @@ class AuthCubit extends Cubit<FormStateApi> {
       ),
     );
     try {
-      LoginResponse loginResponse = await networkModule.login(
+      LoginResponse loginResponse = await AuthNetworkModule.login(
         email: email,
         password: password,
       );
@@ -61,7 +60,7 @@ class AuthCubit extends Cubit<FormStateApi> {
       ),
     );
     try {
-      AuthModel authModel = await networkModule.register(
+      AuthModel authModel = await AuthNetworkModule.register(
         registerInput: registerInput,
       );
 
@@ -99,7 +98,7 @@ class AuthCubit extends Cubit<FormStateApi> {
       ),
     );
     try {
-      AuthModel authModel = await networkModule.forgotPassword(
+      AuthModel authModel = await AuthNetworkModule.forgotPassword(
         email: email,
       );
 

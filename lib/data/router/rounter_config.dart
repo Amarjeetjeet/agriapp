@@ -6,6 +6,7 @@ import 'package:agriapp/ui/auth/password/forgot_password/forgot_password_ui.dart
 import 'package:agriapp/ui/auth/password/otp_ui/otp_ui.dart';
 import 'package:agriapp/ui/auth/register/register_ui.dart';
 import 'package:agriapp/ui/splash/splash_screen_ui.dart';
+import 'package:agriapp/ui/static_web_pages/contact_us.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 

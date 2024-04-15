@@ -51,6 +51,7 @@ class _LoginUiState extends State<LoginUi> {
           PreferenceUtils.setString(PreferenceUtils.USERID, loginResponse?.loginUser?.id ?? "");
           PreferenceUtils.setString(PreferenceUtils.USERNAME, loginResponse?.loginUser?.displayName ?? "");
           PreferenceUtils.setString(PreferenceUtils.USER_RESPONSE, loginResponse?.loginUser?.toString() ?? "");
+          PreferenceUtils.setString(PreferenceUtils.USER_EMAIL, loginResponse?.loginUser?.userEmail ?? "");
           context.pushReplacementNamed(RouterUtil.homeUi);
         }
         if (state.formLoadingState == FormLoadingState.failure) {

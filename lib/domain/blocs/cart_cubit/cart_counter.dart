@@ -10,8 +10,8 @@ class CartCounterCubit extends Cubit<int> {
     _databaseHelper = DatabaseHelper();
   }
 
-  Future<void> getQuantity({required int productId}) async {
-    int count = await _databaseHelper.getProductQuantity(productId);
+  Future<void> getQuantity({required int? productId}) async {
+    int count = await _databaseHelper.getProductQuantity(productId ?? 0);
     debugPrint("The count is $count");
     emit(count);
   }

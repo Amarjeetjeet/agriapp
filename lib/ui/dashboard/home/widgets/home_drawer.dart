@@ -5,7 +5,13 @@ import 'package:agriapp/ui/auth/password/change_password/change_password_ui.dart
 import 'package:agriapp/ui/cart/address/address_ui.dart';
 import 'package:agriapp/ui/cart/address/billing_address.dart';
 import 'package:agriapp/ui/order/my_orders/my_orders.dart';
+import 'package:agriapp/ui/static_web_pages/about_us.dart';
+import 'package:agriapp/ui/static_web_pages/contact_us.dart';
+import 'package:agriapp/ui/static_web_pages/term_and_condition.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../data/router/rounter_config.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -48,7 +54,9 @@ class HomeDrawer extends StatelessWidget {
                         style: txtMediumF20cWhite,
                       ),
                       Text(
-                        "example@gmail.com",
+                        PreferenceUtils.getString(
+                          PreferenceUtils.USER_EMAIL,
+                        ),
                         style: txtRegularF16cWhite,
                       ),
                     ],
@@ -67,11 +75,11 @@ class HomeDrawer extends StatelessWidget {
                     );
                   },
                 ),
-                buildListTile(
-                  iconName: setting,
-                  name: 'Setting',
-                  onTap: () {},
-                ),
+                // buildListTile(
+                //   iconName: setting,
+                //   name: 'Setting',
+                //   onTap: () {},
+                // ),
                 buildListTile(
                   iconName: location,
                   name: 'My Address',
@@ -79,7 +87,8 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => const BillingAddress(),
+                        builder: (BuildContext context) =>
+                            const BillingAddress(),
                       ),
                     );
                   },
@@ -91,7 +100,8 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => const ChangePasswordUi(),
+                        builder: (BuildContext context) =>
+                            const ChangePasswordUi(),
                       ),
                     );
                   },
@@ -104,12 +114,38 @@ class HomeDrawer extends StatelessWidget {
                 buildListTile(
                   iconName: headphones,
                   name: 'Contact Us',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const ContactUs(),
+                      ),
+                    );
+                  },
+                ),
+                buildListTile(
+                  iconName: headphones,
+                  name: 'About us',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const AboutUs(),
+                      ),
+                    );
+                  },
                 ),
                 buildListTile(
                   iconName: file,
                   name: 'Terms & Conditions',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const TermAndConditionsPage(),
+                      ),
+                    );
+                  },
                 ),
                 buildListTile(
                   iconName: exit,

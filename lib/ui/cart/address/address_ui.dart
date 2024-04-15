@@ -1,3 +1,4 @@
+import 'package:agriapp/data/data_source/local/database_helper/database_helper.dart';
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
@@ -8,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/helper/widgets/utils.dart';
 import '../../../data/router/rounter_config.dart';
+import '../../../domain/blocs/order/order_response.dart';
 import '../../../domain/models/auth/login_response.dart';
 import '../../../domain/models/model/shipping_address_response.dart';
 import '../../../domain/models/order/order_input.dart';
@@ -85,9 +87,12 @@ class _AddressUiState extends State<AddressUi> {
                   }
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.success) {
-                    LoginResponse loginResponse = state.success;
-                    // PreferenceUtils.setString(PreferenceUtils.USERID, loginResponse?.message);
+                    var snackBar = SnackBar(
+                      content: Text((createOrderState.success as OrderCreateResponse).messege ?? ""),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     context.pushReplacementNamed(RouterUtil.homeUi);
+                    DatabaseHelper.clearCart();
                   }
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.failure) {
@@ -108,31 +113,32 @@ class _AddressUiState extends State<AddressUi> {
                       onTap: () async {
                         OrderInput orderInput = OrderInput(
                           createOrder: CreateOrder(
-                              productData:
-                                  widget.orderInput.createOrder?.productData,
-                              shippingData: ShippingData(
-                                deviveryCharg: "80",
-                              ),
-                              paymentData: PaymentData(
-                                paymentMethod: "cod",
-                                paymentMethodTitle: "Cash on delivery",
-                              ),
-                              cuponData: CuponData(
-                                cuponCode: "",
-                                cuponType: "",
-                              ),
-                              userData: UserData(
-                                  userId: "2",
-                                  firstName: "Dummy user",
-                                  lastName: "Dummy lastname",
-                                  company: "dummy company",
-                                  address1: "Address 1",
-                                  address2: "Address 2",
-                                  email: "Dummy@gmail.com",
-                                  city: "Ahemedabad",
-                                  state: "Gujarat",
-                                  postcode: "380007",
-                                  country: "IN")),
+                            productData:
+                                widget.orderInput.createOrder?.productData,
+                            shippingData: ShippingData(
+                              deviveryCharg: "80",
+                            ),
+                            paymentData: PaymentData(
+                              paymentMethod: "cod",
+                              paymentMethodTitle: "Cash on delivery",
+                            ),
+                            cuponData: CuponData(
+                              cuponCode: "",
+                              cuponType: "",
+                            ),
+                            userData: UserData(
+                                userId: "2",
+                                firstName: "Demo",
+                                lastName: "user",
+                                company: "dummy company",
+                                address1: "Address 1",
+                                address2: "Address 2",
+                                email: "Dummy@gmail.com",
+                                city: "Ahemedabad",
+                                state: "Gujarat",
+                                postcode: "380007",
+                                country: "IN"),
+                          ),
                         );
                         context
                             .read<CreateOrderCubit>()

@@ -1,9 +1,9 @@
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
-import 'package:agriapp/domain/models/auth/login_response.dart';
 import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../data/data_source/network/network_calls/category_network_call.dart';
+import '../../../../domain/blocs/order/order_response.dart';
 
 class CreateOrderCubit extends Cubit<FormStateApi> {
   CategoryNetworkModule categoryNetworkModule = CategoryNetworkModule();
@@ -22,14 +22,15 @@ class CreateOrderCubit extends Cubit<FormStateApi> {
       ),
     );
     try {
-      LoginResponse loginResponse = await categoryNetworkModule.createOrder(
+      OrderCreateResponse createResponse = await categoryNetworkModule.createOrder(
         orderInput: orderInput,
       );
 
       emit(
         state.copyWith(
           formLoadingState: FormLoadingState.success,
-          success: loginResponse,
+          success: createResponse,
+          errorMessage: createResponse.messege ?? ""
         ),
       );
     } catch (e) {

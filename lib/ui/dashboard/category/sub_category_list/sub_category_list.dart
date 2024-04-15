@@ -20,7 +20,7 @@ class SubCategoryList extends StatelessWidget {
       child: AppScaffold(
         appBar: CustomAppBar(
           suffixIcon: Icons.shopping_cart_outlined,
-          title: categoryName,
+          title: (categoryName).toUpperCase(),
           onBackPress: () {
             Navigator.pop(context);
           },
@@ -80,7 +80,7 @@ class SubCategoryList extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        category?.name ?? "",
+                        (category?.slug ?? "").toUpperCase().replaceAll("-", " "),
                         style: txtRegularF16cBlack,
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),

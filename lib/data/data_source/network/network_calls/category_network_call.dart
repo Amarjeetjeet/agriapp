@@ -3,6 +3,7 @@ import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../domain/blocs/order/order_response.dart';
 import '../../../../domain/models/category/category_list_response.dart';
 import '../../../../domain/models/category/sub_category_list.dart';
 import '../../../../domain/models/product/featured_product_response.dart';
@@ -149,6 +150,8 @@ class CategoryNetworkModule {
       },
     );
 
+    debugPrint("productByCategory response $res", wrapWidth: 100000);
+
     return CategoryByProduct.fromJson(res);
   }
 
@@ -177,17 +180,19 @@ class CategoryNetworkModule {
     return ProductDetail.fromJson(res);
   }
 
-  Future<LoginResponse> createOrder({required OrderInput orderInput}) async {
-    debugPrint("The product id is $orderInput");
+  Future<OrderCreateResponse> createOrder({required OrderInput orderInput}) async {
+
+    debugPrint("The product input is ${orderInput.toJson()}");
+
     final res = await baseClient.post(
       "create_order.php",
       {
-        "product_detail": {"product_id": orderInput.toJson()},
+        "create_order" : orderInput.createOrder?.toJson(),
       },
     );
     debugPrint("The product detail is $res");
 
-    return LoginResponse.fromJson(res);
+    return OrderCreateResponse.fromJson(res);
   }
 
   Future<SearchResponse> searchProduct({required String keyword}) async {
