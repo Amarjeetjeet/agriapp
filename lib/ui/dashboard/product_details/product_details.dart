@@ -1,4 +1,5 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
+import 'package:agriapp/domain/blocs/cart_cubit/cart_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_detail_cubit.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../../../data/helper/barrel.dart';
-import '../../../domain/blocs/cart_cubit/cart_counter.dart';
 import '../../cart/ui/cart_ui.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -29,147 +29,133 @@ class _ProductDetailsState extends State<ProductDetails> {
     super.initState();
     Future.microtask(
       () => context
-          .read<CartCounterCubit>()
+          .read<CartItemCubit>()
           .getQuantity(productId: widget.productId ?? 0),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Future.microtask(
+          () => context.read<CartItemCubit>().getQuantity(
+        productId: widget.productId ?? 0,
+      ),
+    );
     return BlocProvider(
-      create: (context) => CartListCubit(),
-      child: BlocProvider(
-        create: (context) =>
-            ProductDetailCubit()..getProductDetail(productId: widget.productId),
-        child: AppScaffold(
-          appBar: const CustomAppBar(
-            suffixIcon: Icons.shopping_cart_outlined,
-            title: "Product Details",
-          ),
-          bottomNavigationBar: Container(
-            color: Colors.white,
-            height: 110,
-            child: BlocBuilder<ProductDetailCubit, StateApi>(
-              builder: (context, productState) {
-                if (productState is SuccessState) {
-                  ProductDetail productDetail = productState.success;
-                  return BlocBuilder<CartCounterCubit, int>(
-                    builder: (context, counterState) {
-                      return Row(
-                        children: [
-                          10.0.width(),
-                          if (counterState <= 0) ...[
-                            Flexible(
-                              child: SecondaryButton(
-                                onTap: () {
-                                  BlocProvider.of<CartListCubit>(context)
-                                      .addItem(
-                                    productId: productDetail
-                                            .productDetails?.productId ??
-                                        0,
-                                    productImage: productDetail.productDetails
-                                                ?.productImageFeaturedImageLink?[
-                                            0] ??
-                                        "",
-                                    productName: productDetail
-                                            .productDetails?.productName ??
-                                        "N/A",
-                                    discountedPrice: productDetail
-                                            .productDetails?.productPrice ??
-                                        "0",
-                                    regularPrice: productDetail.productDetails
-                                            ?.productRegularPrice ??
-                                        "0",
-                                  );
-
-                                  BlocProvider.of<CartCounterCubit>(context)
-                                      .getQuantity(
-                                    productId:productDetail.productDetails?.productId ?? 0,
-                                  );
-                                },
-                                btnName: "Add To Cart",
-                              ),
-                            ),
-                          ],
-                          if (counterState > 0) ...[
-                            Flexible(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  RoundedIconBtn(
-                                      iconData: Icons.remove,
-                                      onTap: () {
-                                        BlocProvider.of<CartListCubit>(context)
-                                            .decrementQuantity(
-                                          widget.productId ?? 0,
-                                        );
-                                        BlocProvider.of<CartCounterCubit>(
-                                                context)
-                                            .getQuantity(
-                                          productId:productDetail.productDetails?.productId ?? 0,
-                                        );
-                                      }),
-                                  Text(
-                                    counterState.toString(),
-                                    style: txtSemiBoldF24c383838,
-                                  ),
-                                  RoundedIconBtn(
-                                    iconData: Icons.add,
-                                    onTap: () {
-                                      BlocProvider.of<CartListCubit>(context)
-                                          .incrementQuantity(
-                                        widget.productId ?? 0,
-                                      );
-                                      BlocProvider.of<CartCounterCubit>(context)
-                                          .getQuantity(
-                                        productId:productDetail.productDetails?.productId ?? 0,
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                          10.0.width(),
+      create: (context) => ProductDetailCubit()
+        ..getProductDetail(
+          productId: widget.productId,
+        ),
+      child: AppScaffold(
+        appBar: const CustomAppBar(
+          title: "Product Details",
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          height: 110,
+          child: BlocBuilder<ProductDetailCubit, StateApi>(
+            builder: (context, productState) {
+              if (productState is SuccessState) {
+                ProductDetail productDetail = productState.success;
+                return BlocBuilder<CartItemCubit, CartState>(
+                  builder: (context, counterState) {
+                    return Row(
+                      children: [
+                        10.0.width(),
+                        if (counterState.counter <= 0) ...[
                           Flexible(
-                            child: PrimaryButton(
+                            child: SecondaryButton(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        const CartUi(),
-                                  ),
+                                BlocProvider.of<CartItemCubit>(context).addItem(
+                                  productId:
+                                      productDetail.productDetails?.productId ??
+                                          0,
+                                  productImage: productDetail.productDetails
+                                          ?.productImageFeaturedImageLink?[0] ??
+                                      "",
+                                  productName: productDetail
+                                          .productDetails?.productName ??
+                                      "N/A",
+                                  discountedPrice: productDetail
+                                          .productDetails?.productPrice ??
+                                      "0",
+                                  regularPrice: productDetail.productDetails
+                                          ?.productRegularPrice ??
+                                      "0",
                                 );
                               },
-                              btnName: "Go To Cart",
+                              btnName: "Add To Cart",
                             ),
                           ),
-                          10.0.width(),
                         ],
-                      );
-                    },
-                  );
-                }
-                return Container();
-              },
-            ),
-          ),
-          body: BlocBuilder<ProductDetailCubit, StateApi>(
-            builder: (context, productDetailState) {
-              return switch (productDetailState) {
-                LoadingState() => const Loader(),
-                FailureState() => DisplayError(
-                    errorMessage: productDetailState.errorMessage,
-                  ),
-                EmptyState() => const DisplayError(
-                    errorMessage: "Empty details",
-                  ),
-                SuccessState() => buildProductBody(productDetailState.success),
-              };
+                        if (counterState.counter > 0) ...[
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                RoundedIconBtn(
+                                    iconData: Icons.remove,
+                                    onTap: () {
+                                      BlocProvider.of<CartItemCubit>(context)
+                                          .decrementQuantity(
+                                        widget.productId ?? 0,
+                                      );
+                                    }),
+                                Text(
+                                  counterState.counter.toString(),
+                                  style: txtSemiBoldF24c383838,
+                                ),
+                                RoundedIconBtn(
+                                  iconData: Icons.add,
+                                  onTap: () {
+                                    BlocProvider.of<CartItemCubit>(context)
+                                        .incrementQuantity(
+                                      widget.productId ?? 0,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        10.0.width(),
+                        Flexible(
+                          child: PrimaryButton(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const CartUi(),
+                                ),
+                              );
+                            },
+                            btnName: "Go To Cart",
+                          ),
+                        ),
+                        10.0.width(),
+                      ],
+                    );
+                  },
+                );
+              }
+              return Container();
             },
           ),
+        ),
+        body: BlocBuilder<ProductDetailCubit, StateApi>(
+          builder: (context, productDetailState) {
+            return switch (productDetailState) {
+              LoadingState() => const Loader(),
+              FailureState() => DisplayError(
+                  errorMessage: productDetailState.errorMessage,
+                ),
+              EmptyState() => const DisplayError(
+                  errorMessage: "Empty details",
+                ),
+              SuccessState() => buildProductBody(productDetailState.success),
+            };
+          },
         ),
       ),
     );
@@ -196,16 +182,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                   });
                 },
               ),
-              items:
-                  (productDetail?.productDetails?.featureImagesList ?? [])
-                      .map((image) {
-                    debugPrint("The featureList is ${image}");
+              items: (productDetail?.productDetails?.featureImagesList ?? [])
+                  .map((image) {
+                debugPrint("The featureList is ${image}");
 
-                    return Builder(
+                return Builder(
                   builder: (BuildContext context) {
                     return Image.network(
-                      image ??
-                          "",
+                      image ?? "",
                       fit: BoxFit.cover,
                     );
                   },
@@ -216,8 +200,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             Center(
               child: DotsIndicator(
                 dotsCount:
-                    (productDetail?.productDetails?.featureImagesList ??
-                            [])
+                    (productDetail?.productDetails?.featureImagesList ?? [])
                         .length,
                 position: selectedIndex,
                 decorator: DotsDecorator(

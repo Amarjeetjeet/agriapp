@@ -19,8 +19,7 @@ class SubCategoryList extends StatelessWidget {
       create: (context) => CategoryCubit()..subCategory(categoryId: categoryId),
       child: AppScaffold(
         appBar: CustomAppBar(
-          suffixIcon: Icons.shopping_cart_outlined,
-          title: (categoryName).toUpperCase(),
+          title: (categoryName ?? "").toUpperCase().replaceAll("-", " "),
           onBackPress: () {
             Navigator.pop(context);
           },
@@ -37,14 +36,14 @@ class SubCategoryList extends StatelessWidget {
                 ),
               SuccessState() => ListView.separated(
                   itemCount: ((state.success as SubCategoryListResponse)
-                              .productCategries
+                              .productSubCategories
                               ?.category ??
                           [])
                       .length,
                   itemBuilder: (c, i) {
                     Category? category =
                         (state.success as SubCategoryListResponse)
-                            .productCategries
+                            .productSubCategories
                             ?.category?[i];
                     return ListTile(
                       onTap: () {

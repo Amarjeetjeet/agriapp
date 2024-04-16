@@ -22,7 +22,7 @@ class _SplashScreenUiState extends State<SplashScreenUi> {
       () => Timer(const Duration(seconds: 3), () {
         debugPrint("User id is ${PreferenceUtils.getString(PreferenceUtils.USERID)}");
         if(PreferenceUtils.getString(PreferenceUtils.USERID).isNotEmpty){
-          context.pushReplacementNamed(RouterUtil.homeUi);
+          context.pushReplacementNamed(RouterUtil.dashboard);
         }else{
           context.pushReplacementNamed(RouterUtil.introScreen);
         }

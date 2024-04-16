@@ -18,7 +18,6 @@ class _CategoryListAllState extends State<CategoryListAll> {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: CustomAppBar(
-        suffixIcon: Icons.shopping_cart_outlined,
         title: "Category",
         onBackPress: () {
           Navigator.pop(context);

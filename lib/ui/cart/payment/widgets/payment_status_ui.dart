@@ -13,7 +13,6 @@ class PaymentStatusUi extends StatelessWidget {
     return Scaffold(
       backgroundColor: cScaffoldBg,
       appBar: CustomAppBar(
-        suffixIcon: Icons.notifications_none_sharp,
         title: isSuccess ? "Success" : "Failed",
       ),
       body: SingleChildScrollView(

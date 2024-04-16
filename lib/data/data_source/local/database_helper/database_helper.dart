@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
 
 class DatabaseHelper {
   static Database? _database;
@@ -11,7 +12,8 @@ class DatabaseHelper {
       return;
     }
     try {
-      String path = '${await getDatabasesPath()}cart.db';
+      var databasesPath = await getDatabasesPath();
+      String path = p.join(databasesPath, "cart.db");
       _database =
           await openDatabase(path, version: _version, onCreate: (db, version) {
         debugPrint('Create a new one');

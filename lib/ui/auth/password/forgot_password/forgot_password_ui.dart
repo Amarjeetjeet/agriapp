@@ -7,7 +7,7 @@ import '../../../../data/helper/barrel.dart';
 
 import '../../../../data/helper/widgets/utils.dart';
 import '../../../../domain/blocs/state_api/form_state.dart';
-import '../../auth_cubit/auth_cubit.dart';
+import '../../../../domain/blocs/auth_cubit/auth_cubit.dart';
 
 class ForgotPasswordUi extends StatefulWidget {
   const ForgotPasswordUi({Key? key}) : super(key: key);

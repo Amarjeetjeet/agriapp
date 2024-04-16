@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/data_source/network/network_calls/category_network_call.dart';
@@ -9,17 +10,17 @@ import '../state_api/state_api.dart';
 class CategoryCubit extends Cubit<StateApi> {
   CategoryCubit() : super(LoadingState());
 
-  CategoryNetworkModule categoryNetworkModule = CategoryNetworkModule();
-
   Future<void> allCategory() async {
     try {
       CategoryListResponse categoryListResponse =
-          await categoryNetworkModule.allCategory();
+          await ProductNetworkModule.allCategory();
 
       if ((categoryListResponse.productCategries?.category ?? []).isEmpty) {
-        return emit(EmptyState());
+        emit(EmptyState());
+        return;
       }
       emit(SuccessState(success: categoryListResponse));
+      return;
     } catch (e) {
       emit(FailureState(errorMessage: e.toString()));
     }
@@ -28,12 +29,14 @@ class CategoryCubit extends Cubit<StateApi> {
   Future<void> productByCategory({required int categoryId}) async {
     try {
       CategoryByProduct categoryByProduct =
-      await categoryNetworkModule.productByCategory(categoryId : categoryId);
+          await ProductNetworkModule.productByCategory(categoryId: categoryId);
 
       if ((categoryByProduct.categoryProductList?.product ?? []).isEmpty) {
-        return emit(EmptyState());
+        emit(EmptyState());
+        return;
       }
       emit(SuccessState(success: categoryByProduct));
+      return;
     } catch (e) {
       emit(FailureState(errorMessage: e.toString()));
     }
@@ -42,12 +45,17 @@ class CategoryCubit extends Cubit<StateApi> {
   Future<void> subCategory({required int categoryId}) async {
     try {
       SubCategoryListResponse subCategoryListResponse =
-      await categoryNetworkModule.subCategory(categoryId : categoryId);
+          await ProductNetworkModule.subCategory(
+        categoryId: categoryId,
+      );
 
-      if ((subCategoryListResponse.productCategries?.category ?? []).isEmpty) {
-        return emit(EmptyState());
+      if ((subCategoryListResponse.productSubCategories?.category ?? [])
+          .isEmpty) {
+        emit(EmptyState());
+        return;
       }
       emit(SuccessState(success: subCategoryListResponse));
+      return;
     } catch (e) {
       emit(FailureState(errorMessage: e.toString()));
     }

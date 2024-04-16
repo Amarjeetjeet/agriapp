@@ -1,5 +1,5 @@
 import 'package:agriapp/data/helper/barrel.dart';
-import 'package:agriapp/ui/static_web_pages/static_page_cubit.dart';
+import 'package:agriapp/domain/blocs/static_page_cubit/static_page_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

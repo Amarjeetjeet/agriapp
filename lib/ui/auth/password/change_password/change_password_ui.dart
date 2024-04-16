@@ -34,7 +34,6 @@ class _ChangePasswordUiState extends State<ChangePasswordUi> {
       create: (context) => ChangePasswordCubit(),
       child: Scaffold(
         appBar: const CustomAppBar(
-          suffixIcon: null,
           title: "Change password",
         ),
         body: BlocListener<ChangePasswordCubit, FormStateApi>(

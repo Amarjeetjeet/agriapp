@@ -8,8 +8,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/helper/barrel.dart';
 import '../../../data/router/rounter_config.dart';
-import '../../../domain/blocs/cart_cubit/cart_counter.dart';
-import '../address/address_cubit.dart';
+import '../../../domain/blocs/cart_cubit/cart_state.dart';
+import '../../../domain/blocs/address_cubit/address_cubit.dart';
 import '../address/address_ui.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/price_calculation.dart';
@@ -21,142 +21,139 @@ class CartUi extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddressCubit()..getShippingAddress(),
-      child: BlocProvider(
-        create: (context) => CartListCubit(),
-        child: BlocBuilder<CartListCubit, List<CartItems>>(
-          builder: (context, state) {
-            return Scaffold(
-              backgroundColor: cScaffoldBg,
-              appBar: const CustomAppBar(
-                suffixIcon: Icons.notifications_none_sharp,
-                title: 'Cart',
-              ),
-              body: state.isEmpty
-                  ? const DisplayError(
-                      errorMessage: "No Item in cart!",
-                    )
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 8.0,
-                        ),
-                        child: Column(
-                          children: [
-                            10.0.height(),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state.length,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                CartItems item = state[index];
-                                return buildCard(item: item, context: context);
-                              },
-                            ),
-                            10.0.height(),
-                            TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: InputBorder.none,
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(32.0),
-                                  ),
+      child: BlocBuilder<CartItemCubit, CartState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: cScaffoldBg,
+            appBar: const CustomAppBar(
+              title: 'Cart',
+              hideCartIcon: false,
+            ),
+            body: state.cartItems.isEmpty
+                ? const DisplayError(
+                    errorMessage: "No Item in cart!",
+                  )
+                : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: Column(
+                        children: [
+                          10.0.height(),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.cartItems.length,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              CartItems item = state.cartItems[index];
+                              return buildCard(item: item, context: context);
+                            },
+                          ),
+                          10.0.height(),
+                          TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
                                 ),
-                                hintText: 'Promo code',
-                                hintStyle: txtMediumF14c7C7C7C,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 16.0,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(32.0),
                                 ),
-                                suffixIcon: TextButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    "Apply",
-                                    style: txtSemiBoldF14Primary,
-                                  ),
+                              ),
+                              hintText: 'Promo code',
+                              hintStyle: txtMediumF14c7C7C7C,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 16.0,
+                              ),
+                              suffixIcon: TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  "Apply",
+                                  style: txtSemiBoldF14Primary,
                                 ),
                               ),
                             ),
-                            10.0.height(),
-                            PriceCalculation(
-                              totalPrice: context
-                                  .read<CartListCubit>()
-                                  .calculateTotalPrice(),
-                              shippingCharges: 80.00,
-                              discountPrice: context
-                                  .read<CartListCubit>()
-                                  .calculateDiscountedPrice(),
-                              netPrice: context
-                                  .read<CartListCubit>()
-                                  .calculateNetPrice(),
-                            ),
-                            10.0.height(),
-                            PrimaryButton(
-                              onTap: state.isEmpty
-                                  ? null
-                                  : () {
-                                      List<ProductData> productData = [];
+                          ),
+                          10.0.height(),
+                          PriceCalculation(
+                            totalPrice: context
+                                .read<CartItemCubit>()
+                                .calculateTotalPrice(),
+                            shippingCharges: 80.00,
+                            discountPrice: context
+                                .read<CartItemCubit>()
+                                .calculateDiscountedPrice(),
+                            netPrice: context
+                                .read<CartItemCubit>()
+                                .calculateNetPrice(),
+                          ),
+                          10.0.height(),
+                          PrimaryButton(
+                            onTap: state.cartItems.isEmpty
+                                ? null
+                                : () {
+                                    List<ProductData> productData = [];
 
-                                      for (var item in state) {
-                                        productData.add(
-                                          ProductData(
-                                            productId:
-                                                item.productId.toString(),
-                                            qty: item.quantity.toString(),
-                                          ),
-                                        );
-                                      }
-
-                                      OrderInput orderInput = OrderInput(
-                                        createOrder: CreateOrder(
-                                          productData: productData,
-                                          shippingData: ShippingData(
-                                            deviveryCharg: "80",
-                                          ),
-                                          paymentData: PaymentData(
-                                            paymentMethod: "cod",
-                                            paymentMethodTitle:
-                                                "Cash on delivery",
-                                          ),
-                                          cuponData: CuponData(
-                                            cuponCode: "",
-                                            cuponType: "",
-                                          ),
+                                    for (var item in state.cartItems) {
+                                      productData.add(
+                                        ProductData(
+                                          productId:
+                                              item.productId.toString(),
+                                          qty: item.quantity.toString(),
                                         ),
                                       );
-                                      debugPrint("Item is $productData");
-                                      // debugPrint("Item is $orderInput");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              AddressUi(
-                                            orderInput: orderInput,
-                                          ),
+                                    }
+
+                                    OrderInput orderInput = OrderInput(
+                                      createOrder: CreateOrder(
+                                        productData: productData,
+                                        shippingData: ShippingData(
+                                          deviveryCharg: "80",
                                         ),
-                                      );
-                                    },
-                              btnName: "Place Order",
-                            ),
-                            10.0.height(),
-                            SecondaryButton(
-                              onTap: () {
-                                context.pushReplacementNamed(RouterUtil.homeUi);
-                              },
-                              btnName: "Continue Shopping",
-                            ),
-                          ],
-                        ),
+                                        paymentData: PaymentData(
+                                          paymentMethod: "cod",
+                                          paymentMethodTitle:
+                                              "Cash on delivery",
+                                        ),
+                                        cuponData: CuponData(
+                                          cuponCode: "",
+                                          cuponType: "",
+                                        ),
+                                      ),
+                                    );
+                                    debugPrint("Item is $productData");
+                                    // debugPrint("Item is $orderInput");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            AddressUi(
+                                          orderInput: orderInput,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                            btnName: "Place Order",
+                          ),
+                          10.0.height(),
+                          SecondaryButton(
+                            onTap: () {
+                              context.pushReplacementNamed(RouterUtil.homeUi);
+                            },
+                            btnName: "Continue Shopping",
+                          ),
+                        ],
                       ),
                     ),
-            );
-          },
-        ),
+                  ),
+          );
+        },
       ),
     );
   }
@@ -188,12 +185,9 @@ class CartUi extends StatelessWidget {
               iconData:
                   item.quantity == 1 ? Icons.delete_outline : Icons.remove,
               onTap: () {
+                debugPrint("item count is ${item.productId}");
                 context
-                    .read<CartCounterCubit>()
-                    .getQuantity(productId: item.productId ?? 0);
-
-                context
-                    .read<CartListCubit>()
+                    .read<CartItemCubit>()
                     .decrementQuantity(item.productId ?? 0);
               },
             ),
@@ -207,10 +201,7 @@ class CartUi extends StatelessWidget {
               iconData: Icons.add,
               onTap: () {
                 context
-                    .read<CartCounterCubit>()
-                    .getQuantity(productId: item.productId ?? 0);
-                context
-                    .read<CartListCubit>()
+                    .read<CartItemCubit>()
                     .incrementQuantity(item.productId ?? 0);
               },
             ),

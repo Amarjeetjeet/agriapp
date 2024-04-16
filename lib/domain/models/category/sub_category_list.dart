@@ -1,32 +1,26 @@
+import 'package:flutter/cupertino.dart';
+
 class SubCategoryListResponse {
-  ProductCategries? productCategries;
+  ProductSubCategories? productSubCategories;
   bool? status;
 
-  SubCategoryListResponse({this.productCategries, this.status});
+  SubCategoryListResponse({this.productSubCategories, this.status});
 
   SubCategoryListResponse.fromJson(Map<String, dynamic> json) {
-    productCategries = json['product_categries'] != null
-        ? ProductCategries.fromJson(json['product_categries'])
-        : null;
-    status = json['status'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    if (productCategries != null) {
-      data['product_categries'] = productCategries!.toJson();
+    debugPrint("product_categries is ${json['product_categries']}");
+    if(json['product_categries'] != null && json['product_categries'].toString() != "[]"){
+      productSubCategories = ProductSubCategories.fromJson(json['product_categries']);
     }
-    data['status'] = status;
-    return data;
+    status = json['status'];
   }
 }
 
-class ProductCategries {
+class ProductSubCategories {
   List<Category>? category;
 
-  ProductCategries({this.category});
+  ProductSubCategories({this.category});
 
-  ProductCategries.fromJson(Map<String, dynamic> json) {
+  ProductSubCategories.fromJson(Map<String, dynamic> json) {
     if (json['category'] != null) {
       category = <Category>[];
       json['category'].forEach((v) {

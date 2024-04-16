@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-sealed class StateApi extends Equatable {}
+sealed class StateApi extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
 class LoadingState extends StateApi {
   @override

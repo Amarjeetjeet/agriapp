@@ -8,15 +8,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     this.prefixIcon = Icons.arrow_back_ios_new_rounded,
-    this.suffixIcon,
     this.onBackPress,
     this.onSuffixIconPress,
-    required this.title,
+    required this.title,  this.hideCartIcon = true,
   });
 
-  final IconData? prefixIcon, suffixIcon;
+  final IconData? prefixIcon;
   final void Function()? onBackPress, onSuffixIconPress;
   final String title;
+  final bool hideCartIcon;
 
   @override
   Size get preferredSize => const Size.fromHeight(100);
@@ -61,31 +61,39 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-              Text(
-                title,
-                style: txtMediumF18cWhite,
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.50,
+                child: Text(
+                  title,
+                  style: txtMediumF18cWhite,
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                ),
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => const CartUi(),
+              Visibility(
+                visible: hideCartIcon,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const CartUi(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                      shape: BoxShape.circle,
                     ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white,
+                    child: SvgHelper(
+                      imagePath: cart,
+                      width: 26,
+                      fit: BoxFit.fitWidth,
                     ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: SvgHelper(
-                    imagePath: cart,
-                    width: 26,
-                    fit: BoxFit.fitWidth,
                   ),
                 ),
               ),

@@ -3,24 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/data_source/local/database_helper/database_helper.dart';
 import '../../models/cart/cart_item.dart';
+import 'cart_state.dart';
 
-class CartListCubit extends Cubit<List<CartItems>> {
-  late DatabaseHelper _databaseHelper;
+class CartItemCubit extends Cubit<CartState> {
+  final DatabaseHelper databaseHelper;
 
-  CartListCubit() : super([]) {
-    _databaseHelper = DatabaseHelper();
-    getCartItems();
-  }
+  CartItemCubit({required this.databaseHelper}) : super(const CartState());
 
   Future<void> getCartItems() async {
-    final items = await _databaseHelper.getCartItems();
+    final items = await databaseHelper.getCartItems();
     List<CartItems> cList =
         items.map((json) => CartItems.fromJson(json)).toList();
 
     debugPrint("Items count $items");
 
     calculateNetPrice();
-    emit(cList);
+    emit(state.copyWith(cartItems: cList));
+  }
+
+  Future<void> getQuantity({required int? productId}) async {
+    int count = await databaseHelper.getProductQuantity(productId ?? 0);
+    debugPrint("The count is $count");
+    await getCartItems();
+    emit(state.copyWith(counter: count));
   }
 
   Future<void> addItem({
@@ -30,28 +35,32 @@ class CartListCubit extends Cubit<List<CartItems>> {
     required String discountedPrice,
     required String regularPrice,
   }) async {
-    await _databaseHelper.addItemToCart(
+    await databaseHelper.addItemToCart(
       productId: productId,
       productImage: productImage,
       productName: productName,
       discountedPrice: discountedPrice,
       regularPrice: regularPrice,
     );
-    getCartItems();
+    await getCartItems();
+    await getQuantity(productId : productId);
+
   }
 
   Future<void> incrementQuantity(int id) async {
-    await _databaseHelper.incrementQuantity(id);
-    getCartItems();
+    await databaseHelper.incrementQuantity(id);
+    await getCartItems();
+    await getQuantity(productId : id);
   }
 
   Future<void> decrementQuantity(int id) async {
-    await _databaseHelper.decrementQuantity(id);
-    getCartItems();
+    await databaseHelper.decrementQuantity(id);
+    await getCartItems();
+    await getQuantity(productId : id);
   }
 
   double calculateTotalPrice() {
-    final products = state;
+    final products = state.cartItems;
     double total = 0;
     for (var item in products) {
       total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
@@ -60,7 +69,7 @@ class CartListCubit extends Cubit<List<CartItems>> {
   }
 
   double calculateNetPrice() {
-    final products = state;
+    final products = state.cartItems;
     double total = 0;
     double shippingCharge = 80;
     for (var item in products) {

@@ -39,7 +39,6 @@ class _BillingAddressState extends State<BillingAddress> {
     return Scaffold(
       backgroundColor: cScaffoldBg,
       appBar: const CustomAppBar(
-        suffixIcon: Icons.notifications_none_sharp,
         title: 'Add New Address',
       ),
       body: SingleChildScrollView(

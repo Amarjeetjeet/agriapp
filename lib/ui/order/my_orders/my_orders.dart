@@ -8,7 +8,6 @@ class MyOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       appBar: const CustomAppBar(
-        suffixIcon: Icons.confirmation_num,
         title: "My Order",
       ),
       body: Column(

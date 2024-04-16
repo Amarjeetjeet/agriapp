@@ -6,17 +6,18 @@ import '../state_api/state_api.dart';
 
 class FeaturedProductCubit extends Cubit<StateApi> {
   FeaturedProductCubit() : super(LoadingState());
-  CategoryNetworkModule categoryNetworkModule = CategoryNetworkModule();
 
   Future<void> featuredProductList({required String productCategoryId}) async {
     try {
       FeaturedProduct featuredProduct =
-          await categoryNetworkModule.featuredProduct(productCategoryId : productCategoryId);
+          await ProductNetworkModule.featuredProduct(productCategoryId : productCategoryId);
 
       if ((featuredProduct.featuredCategories?.product ?? []).isEmpty) {
-        return emit(EmptyState());
+        emit(EmptyState());
+        return;
       }
       emit(SuccessState(success: featuredProduct));
+      return;
     } catch (e) {
       emit(FailureState(errorMessage: e.toString()));
     }

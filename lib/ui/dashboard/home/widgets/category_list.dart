@@ -44,7 +44,7 @@ class CategoryList extends StatelessWidget {
                 ),
                 1.h.height(),
                 Container(
-                  height: 20.h,
+                  height: 22.h,
                   alignment: Alignment.center,
                   child: ListView.builder(
                     itemCount: (state.success as CategoryListResponse)
@@ -134,7 +134,7 @@ class CategoryList extends StatelessWidget {
                                 SizedBox(
                                   width: 80,
                                   child: Text(
-                                    (productCategory?.slug ?? "").toUpperCase(),
+                                    (productCategory?.slug ?? "").toUpperCase().replaceAll("-", " "),
                                     textAlign: TextAlign.center,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,

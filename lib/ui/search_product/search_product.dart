@@ -1,10 +1,10 @@
 import 'package:agriapp/data/helper/barrel.dart';
-import 'package:agriapp/ui/search_product/search/search_cubit.dart';
 import 'package:agriapp/ui/search_product/search_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import '../../domain/blocs/search_cubit/search_cubit.dart';
 import '../../domain/models/search/search_response.dart';
 import '../dashboard/product_details/product_widget.dart';
 

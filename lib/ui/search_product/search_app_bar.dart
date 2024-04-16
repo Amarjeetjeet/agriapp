@@ -1,9 +1,9 @@
-import 'package:agriapp/ui/search_product/search/search_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/helper/barrel.dart';
+import '../../domain/blocs/search_cubit/search_cubit.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SearchAppBar({super.key});

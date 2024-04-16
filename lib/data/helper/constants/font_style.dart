@@ -76,6 +76,11 @@ TextStyle txtRegularF12c8C8C8C = GoogleFonts.poppins(
   fontWeight: FontWeight.w400,
 );
 
+TextStyle txtRegularF12c7C7C7C = GoogleFonts.poppins(
+  fontSize: 12.dp,
+  color: c7C7C7C,
+  fontWeight: FontWeight.w400,
+);
 TextStyle txtRegularF14c7C7C7C = GoogleFonts.poppins(
   fontSize: 14.dp,
   color: c7C7C7C,
@@ -162,6 +167,12 @@ TextStyle txtMediumF14c383838 = GoogleFonts.poppins(
 TextStyle txtMediumF12cWhite = GoogleFonts.poppins(
   fontSize: 12.dp,
   color: Colors.white,
+  fontWeight: FontWeight.w500,
+);
+
+TextStyle txtMediumF12cPrimary = GoogleFonts.poppins(
+  fontSize: 12.dp,
+  color: primaryColor,
   fontWeight: FontWeight.w500,
 );
 

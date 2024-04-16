@@ -61,24 +61,5 @@ class AuthNetworkModule {
     return AuthModel.fromJson(res);
   }
 
-  static Future<Map<String, dynamic>> contactUs() async {
-    var res = await baseClient.get(
-      api: "contact_us.php",
-    );
-    return res;
-  }
 
-  static Future<Map<String, dynamic>> getTermAndCondition() async {
-    var res = await baseClient.get(
-      api: "seller_terms_and _conditions.php",
-    );
-    return res;
-  }
-
-  static Future<Map<String, dynamic>> aboutUs() async {
-    var res = await baseClient.get(
-      api: "about_us.php",
-    );
-    return res;
-  }
 }

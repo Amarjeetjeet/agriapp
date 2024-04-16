@@ -6,7 +6,9 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import 'data/data_source/local/database_helper/database_helper.dart';
 import 'data/helper/barrel.dart';
 import 'data/router/rounter_config.dart';
-import 'domain/blocs/cart_cubit/cart_counter.dart';
+import 'domain/blocs/cart_cubit/cart_cubit.dart';
+import 'domain/blocs/category_cubit/category_cubit.dart';
+import 'domain/blocs/featured_product_cubit/featured_product_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,8 +62,14 @@ class _EntryPointState extends State<EntryPoint> {
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => CartCounterCubit(),
-          )
+            create: (context) => CartItemCubit(databaseHelper: DatabaseHelper())..getCartItems(),
+          ),
+          BlocProvider(
+            create: (context) => CategoryCubit()..allCategory(),
+          ),
+          BlocProvider(
+            create: (context) => FeaturedProductCubit(),
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: _routes.router,

@@ -1,5 +1,4 @@
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/data_source/network/network_calls/category_network_call.dart';
@@ -8,14 +7,11 @@ import '../../../domain/models/product/product_detail.dart';
 class ProductDetailCubit extends Cubit<StateApi> {
   ProductDetailCubit() : super(LoadingState());
 
-  CategoryNetworkModule categoryNetworkModule = CategoryNetworkModule();
-
   Future<void> getProductDetail({required int? productId}) async {
-    debugPrint("Product id is $productId");
     emit(LoadingState());
     try {
       ProductDetail? productDetails =
-          await categoryNetworkModule.getProductDetail(
+          await ProductNetworkModule.getProductDetail(
         productId: productId,
       );
       emit(SuccessState(success: productDetails));

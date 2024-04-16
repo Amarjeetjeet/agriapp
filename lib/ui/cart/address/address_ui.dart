@@ -2,7 +2,6 @@ import 'package:agriapp/data/data_source/local/database_helper/database_helper.d
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
-import 'package:agriapp/ui/cart/payment/order_cubit/create_order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,10 +9,10 @@ import 'package:go_router/go_router.dart';
 import '../../../data/helper/widgets/utils.dart';
 import '../../../data/router/rounter_config.dart';
 import '../../../domain/blocs/order/order_response.dart';
-import '../../../domain/models/auth/login_response.dart';
+import '../../../domain/blocs/order_cubit/create_order_cubit.dart';
 import '../../../domain/models/model/shipping_address_response.dart';
 import '../../../domain/models/order/order_input.dart';
-import 'address_cubit.dart';
+import '../../../domain/blocs/address_cubit/address_cubit.dart';
 import 'billing_address_form.dart';
 
 class AddressUi extends StatefulWidget {
@@ -67,8 +66,8 @@ class _AddressUiState extends State<AddressUi> {
       ],
       child: Scaffold(
         appBar: const CustomAppBar(
-          suffixIcon: Icons.add,
           title: 'Select address',
+          hideCartIcon: false,
         ),
         bottomNavigationBar: BlocBuilder<AddressCubit, StateApi>(
           builder: (context, state) {

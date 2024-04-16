@@ -11,7 +11,6 @@ class NotificationsUi extends StatelessWidget {
     return AppScaffold(
       appBar: const CustomAppBar(
         prefixIcon: Icons.arrow_back_ios_new_rounded,
-        suffixIcon: Icons.shopping_cart_outlined,
         title: "Notification",
       ),
       body: SingleChildScrollView(

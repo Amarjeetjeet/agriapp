@@ -23,12 +23,13 @@ class CategoryWiseProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          CategoryCubit()..productByCategory(categoryId: categoryId),
+      create: (context) => CategoryCubit()
+        ..productByCategory(
+          categoryId: categoryId,
+        ),
       child: AppScaffold(
         appBar: CustomAppBar(
-          suffixIcon: Icons.shopping_cart_outlined,
-          title: (categoryName ?? "").toUpperCase(),
+          title: (categoryName ?? "").toUpperCase().replaceAll("-", " "),
           onBackPress: () => context.pop(),
         ),
         body: BlocBuilder<CategoryCubit, StateApi>(

@@ -19,7 +19,6 @@ class _PaymentUiState extends State<PaymentUi> {
     return Scaffold(
       backgroundColor: cScaffoldBg,
       appBar: const CustomAppBar(
-        suffixIcon: Icons.notifications_none_sharp,
         title: 'Payment',
       ),
       body: SingleChildScrollView(

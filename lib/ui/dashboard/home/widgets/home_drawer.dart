@@ -2,16 +2,15 @@ import 'package:agriapp/data/data_source/local/preference_util/preference_utils.
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/data/helper/widgets/utils.dart';
 import 'package:agriapp/ui/auth/password/change_password/change_password_ui.dart';
-import 'package:agriapp/ui/cart/address/address_ui.dart';
 import 'package:agriapp/ui/cart/address/billing_address.dart';
 import 'package:agriapp/ui/order/my_orders/my_orders.dart';
 import 'package:agriapp/ui/static_web_pages/about_us.dart';
 import 'package:agriapp/ui/static_web_pages/contact_us.dart';
 import 'package:agriapp/ui/static_web_pages/term_and_condition.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../data/router/rounter_config.dart';
+import '../../../../domain/blocs/address_cubit/address_cubit.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -87,8 +86,10 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const BillingAddress(),
+                        builder: (BuildContext context) => BlocProvider(
+                          create: (context) => AddressCubit()..getShippingAddress(),
+                          child: const BillingAddress(),
+                        ),
                       ),
                     );
                   },
@@ -142,7 +143,8 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => const TermAndConditionsPage(),
+                        builder: (BuildContext context) =>
+                            const TermAndConditionsPage(),
                       ),
                     );
                   },

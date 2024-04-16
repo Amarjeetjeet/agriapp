@@ -1,10 +1,11 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
-import 'package:agriapp/ui/auth/auth_cubit/auth_cubit.dart';
+import 'package:agriapp/domain/blocs/auth_cubit/auth_cubit.dart';
 import 'package:agriapp/ui/auth/login/login_ui.dart';
 import 'package:agriapp/ui/auth/password/change_password/change_password_ui.dart';
 import 'package:agriapp/ui/auth/password/forgot_password/forgot_password_ui.dart';
 import 'package:agriapp/ui/auth/password/otp_ui/otp_ui.dart';
 import 'package:agriapp/ui/auth/register/register_ui.dart';
+import 'package:agriapp/ui/dashboard/dashboard_ui.dart';
 import 'package:agriapp/ui/splash/splash_screen_ui.dart';
 import 'package:agriapp/ui/static_web_pages/contact_us.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +28,7 @@ class RouterUtil {
   static String changePassword = "/change_password";
   static String notificationUi = "/notification_ui";
   static String homeUi = "/home_ui";
+  static String dashboard = "/dashboard";
 
   final GoRouter router = GoRouter(
     routes: <RouteBase>[
@@ -85,6 +87,11 @@ class RouterUtil {
         path: homeUi,
         name: homeUi,
         builder: (context, state) => const HomeUi(),
+      ),
+      GoRoute(
+        path: dashboard,
+        name: dashboard,
+        builder: (context, state) => const DashboardUi(),
       ),
     ],
   );

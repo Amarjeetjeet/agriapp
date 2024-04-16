@@ -7,7 +7,6 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/router/rounter_config.dart';
-import '../../../domain/blocs/category_cubit/category_cubit.dart';
 import '../../../domain/blocs/featured_product_cubit/featured_product_cubit.dart';
 import 'widgets/category_list.dart';
 import 'widgets/home_app_bar.dart';
@@ -31,17 +30,15 @@ class _HomeUiState extends State<HomeUi> {
         onSuffixIconPress: () {
           context.pushNamed(RouterUtil.notificationUi);
         },
-        menu: Builder(
-          builder: (context) {
-            return IconButton.outlined(
-              style: buildIconOutlineStyleFrom(),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: SvgHelper(
-                imagePath: menu,
-              ),
-            );
-          }
-        ),
+        menu: Builder(builder: (context) {
+          return IconButton.outlined(
+            style: buildIconOutlineStyleFrom(),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: SvgHelper(
+              imagePath: menu,
+            ),
+          );
+        }),
       ),
       drawer: const HomeDrawer(),
       body: SingleChildScrollView(
@@ -49,10 +46,7 @@ class _HomeUiState extends State<HomeUi> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
-              BlocProvider(
-                create: (context) => CategoryCubit()..allCategory(),
-                child: const CategoryList(),
-              ),
+              const CategoryList(),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
