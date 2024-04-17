@@ -5,15 +5,12 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import '../../../../data/helper/barrel.dart';
 import '../../../search_product/search_product.dart';
 
-class HomeAppBar extends StatelessWidget  {
-  const HomeAppBar({
-    super.key,
-    this.onSuffixIconPress,
-    required this.menu
-  });
+class HomeAppBar extends StatelessWidget {
+  const HomeAppBar({super.key, this.onSuffixIconPress, required this.menu});
 
   final void Function()? onSuffixIconPress;
   final Widget menu;
+  final double height = 180;
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +25,25 @@ class HomeAppBar extends StatelessWidget  {
             ),
             color: primaryColor,
           ),
-          height: 250,
+          height: height,
         ),
         Image.asset(
           leaf,
-          height: 200,
+          height: height,
           fit: BoxFit.contain,
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width,
-          height: 250,
+          height: height,
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,6 +51,14 @@ class HomeAppBar extends StatelessWidget  {
                       menu,
                       // Text(
                       //   "Delivery to",
+                      //   style: txtMediumF18cWhite,
+                      // ),
+                      Text(
+                        "${DateTime.now().greeting}\n${PreferenceUtils.getString(PreferenceUtils.USERNAME)}",
+                        style: txtMediumF16cWhite,
+                      ),
+                      // Text(
+                      //   // PreferenceUtils.getString(PreferenceUtils.USERNAME),
                       //   style: txtMediumF18cWhite,
                       // ),
                       IconButton.outlined(
@@ -63,22 +70,15 @@ class HomeAppBar extends StatelessWidget  {
                       ),
                     ],
                   ),
-                  1.6.h.height(),
-                  Text(
-                    DateTime.now().greeting,
-                    style: txtMediumF18cWhite,
-                  ),
-                  Text(
-                    PreferenceUtils.getString(PreferenceUtils.USERNAME),
-                    style: txtMediumF18cWhite,
-                  ),
-                  1.3.h.height(),
+                  2.1.h.height(),
+
+                  // 1.3.h.height(),
                   InkWell(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            const SearchProduct(),
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => const SearchProduct(),
+                        transitionDuration: const Duration(seconds: 0),
                       ),
                     ),
                     child: Container(

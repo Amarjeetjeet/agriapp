@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/helper/barrel.dart';
@@ -26,10 +27,13 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             color: primaryColor,
           ),
+          height: height,
+
         ),
         Image.asset(
           leaf,
           fit: BoxFit.contain,
+          height: height,
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width,
@@ -40,6 +44,9 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,7 +69,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     ],
                   ),
-                  20.0.height(),
+                  2.1.h.height(),
                   TextFormField(
                     onChanged: (String keyword) {
                       context
@@ -87,7 +94,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                         borderRadius: BorderRadius.all(Radius.circular(32.0)),
                       ),
                       prefixIconColor: Colors.white,
-                      hintStyle: txtMediumF12cWhite,
+                      hintStyle: txtRegularF14cWhite,
                     ),
                   )
                 ],
