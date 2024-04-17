@@ -26,26 +26,40 @@ class _HomeUiState extends State<HomeUi> {
   Widget build(BuildContext context) {
     return AppScaffold(
       key: _key,
-      appBar: HomeAppBar(
-        onSuffixIconPress: () {
-          context.pushNamed(RouterUtil.notificationUi);
-        },
-        menu: Builder(builder: (context) {
-          return IconButton.outlined(
-            style: buildIconOutlineStyleFrom(),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: SvgHelper(
-              imagePath: menu,
-            ),
-          );
-        }),
-      ),
+      // appBar: HomeAppBar(
+      //   onSuffixIconPress: () {
+      //     context.pushNamed(RouterUtil.notificationUi);
+      //   },
+      //   menu: Builder(builder: (context) {
+      //     return IconButton.outlined(
+      //       style: buildIconOutlineStyleFrom(),
+      //       onPressed: () => Scaffold.of(context).openDrawer(),
+      //       icon: SvgHelper(
+      //         imagePath: menu,
+      //       ),
+      //     );
+      //   }),
+      // ),
       drawer: const HomeDrawer(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 0.0),
           child: Column(
             children: [
+              HomeAppBar(
+                onSuffixIconPress: () {
+                  context.pushNamed(RouterUtil.notificationUi);
+                },
+                menu: Builder(builder: (context) {
+                  return IconButton.outlined(
+                    style: buildIconOutlineStyleFrom(),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    icon: SvgHelper(
+                      imagePath: menu,
+                    ),
+                  );
+                }),
+              ),
               const CategoryList(),
               ListView.builder(
                 shrinkWrap: true,

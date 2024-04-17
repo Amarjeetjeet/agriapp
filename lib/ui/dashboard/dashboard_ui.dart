@@ -85,7 +85,7 @@ class _DashboardUiState extends State<DashboardUi> {
                             50),
                   ),
                   const SizedBox(
-                    height: 16,
+                    height: 12,
                   ),
                   SvgHelper(
                     imagePath: imageIcon[index],
@@ -101,7 +101,7 @@ class _DashboardUiState extends State<DashboardUi> {
                         : txtRegularF12c7C7C7C,
                   ),
                   const SizedBox(
-                    height: 4,
+                    height: 8,
                   ),
                 ],
               ),

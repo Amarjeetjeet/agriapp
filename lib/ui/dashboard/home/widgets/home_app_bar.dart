@@ -5,7 +5,7 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import '../../../../data/helper/barrel.dart';
 import '../../../search_product/search_product.dart';
 
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
+class HomeAppBar extends StatelessWidget  {
   const HomeAppBar({
     super.key,
     this.onSuffixIconPress,
@@ -14,11 +14,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final void Function()? onSuffixIconPress;
   final Widget menu;
-
-  static const double height = 280;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +28,23 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             color: primaryColor,
           ),
+          height: 250,
         ),
         Image.asset(
           leaf,
+          height: 200,
           fit: BoxFit.contain,
         ),
         SizedBox(
           width: MediaQuery.sizeOf(context).width,
-          height: height,
+          height: 250,
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,11 +66,11 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   1.6.h.height(),
                   Text(
                     DateTime.now().greeting,
-                    style: txtMediumF24cWhite,
+                    style: txtMediumF18cWhite,
                   ),
                   Text(
                     PreferenceUtils.getString(PreferenceUtils.USERNAME),
-                    style: txtMediumF24cWhite,
+                    style: txtMediumF18cWhite,
                   ),
                   1.3.h.height(),
                   InkWell(

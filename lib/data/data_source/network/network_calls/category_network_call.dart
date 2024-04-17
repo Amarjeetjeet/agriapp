@@ -15,6 +15,7 @@ class ProductNetworkModule {
   static BaseClientApi baseClient = BaseClientApi();
 
   static Future<CategoryListResponse> allCategory() async {
+
     var res = await baseClient.post(
       "product_categories_list.php",
       {},
