@@ -1,5 +1,6 @@
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_details.dart';
+import 'package:agriapp/ui/dashboard/product_details/product_feature_image.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_variation_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
@@ -28,7 +29,9 @@ class ProductVariationWidget extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       children: [
         Card(
-          elevation: 0,
+          elevation: 1,
+          shadowColor: Colors.white,
+          surfaceTintColor: Colors.white,
           margin: EdgeInsets.zero,
           color: Colors.white,
           child: SizedBox(
@@ -38,23 +41,26 @@ class ProductVariationWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 3.h.height(),
-                SizedBox(
-                  height: 140,
-                  width: 130,
-                  child: Image.network(productFeaturedImage ?? ""),
+                ProductFeaturedImage(
+                  productFeaturedImage: productFeaturedImage,
                 ),
                 3.h.height(),
-                Text(
-                  productName ?? "Product name not available",
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: txtMediumF14c383838,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    productName ?? "Product name not available",
+                    textAlign: TextAlign.center,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    style: txtMediumF14c383838,
+                  ),
                 ),
                 0.6.h.height(),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

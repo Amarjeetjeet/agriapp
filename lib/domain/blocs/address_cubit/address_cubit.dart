@@ -6,16 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/address/address_input.dart';
 
 class AddressCubit extends Cubit<StateApi> {
-  AddressCubit() : super(LoadingState());
+  AddressCubit() : super(EmptyState());
 
-  Future<void> getShippingAddress() async {
+  Future<void> getBillingAddress() async {
     try {
+      emit(LoadingState());
       ShippingAddressResponse shippingAddressResponse =
-          await AppNetworkCall.shippingAddress();
+          await AppNetworkCall.billingAddress();
 
       if ((shippingAddressResponse.userBillingAddress?.billingAddress1 ?? "")
           .isEmpty) {
-        return emit(EmptyState());
+         emit(EmptyState());
+         return;
       }
       emit(SuccessState(success: shippingAddressResponse));
     } catch (e) {
@@ -23,17 +25,4 @@ class AddressCubit extends Cubit<StateApi> {
     }
   }
 
-  Future<void> addShippingAddress({required AddressInput addressInput}) async {
-    try {
-      Map<String, dynamic> response =
-          await AppNetworkCall.addAddress(addressInput: addressInput);
-
-      if (true) {
-        return emit(EmptyState());
-      }
-      emit(SuccessState(success: response));
-    } catch (e) {
-      emit(FailureState(errorMessage: e.toString()));
-    }
-  }
 }

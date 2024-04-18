@@ -1,4 +1,4 @@
-import 'package:agriapp/domain/models/auth/login_response.dart';
+import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,6 @@ class ProductNetworkModule {
   static BaseClientApi baseClient = BaseClientApi();
 
   static Future<CategoryListResponse> allCategory() async {
-
     var res = await baseClient.post(
       "product_categories_list.php",
       {},
@@ -35,7 +34,9 @@ class ProductNetworkModule {
     return FeaturedProduct.fromJson(res);
   }
 
-  static Future<CategoryByProduct> productByCategory({required int categoryId}) async {
+  static Future<CategoryByProduct> productByCategory({
+    required int categoryId,
+  }) async {
     debugPrint("category id is $categoryId");
     var res = await baseClient.post(
       "category_wise_product.php",
@@ -47,7 +48,9 @@ class ProductNetworkModule {
     return CategoryByProduct.fromJson(res);
   }
 
-  static Future<SubCategoryListResponse> subCategory({required int categoryId}) async {
+  static Future<SubCategoryListResponse> subCategory({
+    required int categoryId,
+  }) async {
     var res = await baseClient.post(
       "sub_category.php",
       {
@@ -58,7 +61,9 @@ class ProductNetworkModule {
     return SubCategoryListResponse.fromJson(res);
   }
 
-  static Future<ProductDetail> getProductDetail({required int? productId}) async {
+  static Future<ProductDetail> getProductDetail({
+    required int? productId,
+  }) async {
     final res = await baseClient.post(
       "product_detail.php",
       {
@@ -84,7 +89,9 @@ class ProductNetworkModule {
     return OrderCreateResponse.fromJson(res);
   }
 
-  static Future<SearchResponse> searchProduct({required String keyword}) async {
+  static Future<SearchResponse> searchProduct({
+    required String keyword,
+  }) async {
     final res = await baseClient.post(
       "search_products.php",
       {
@@ -93,5 +100,18 @@ class ProductNetworkModule {
     );
 
     return SearchResponse.fromJson(res);
+  }
+
+  static Future<Map<String, dynamic>>? orderList() async {
+    final res = await baseClient.post(
+      "order_list_user.php",
+      {
+        "order_list": {
+          "user_id": PreferenceUtils.getString(PreferenceUtils.USERID),
+        }
+      },
+    );
+
+    return res;
   }
 }

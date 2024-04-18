@@ -17,13 +17,18 @@ class HeaderWithButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: txtMediumF20c383838,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Flexible(
+          child: Text(
+            title,
+            style: txtMediumF20c383838,
+            textAlign: TextAlign.start,
+          ),
         ),
-        TextButton(
-          onPressed: onPressed,
+        const SizedBox(width: 20,),
+        InkWell(
+          onTap: onPressed,
           child: Text(
             btnText,
             style: txtMediumF16cPrimary,

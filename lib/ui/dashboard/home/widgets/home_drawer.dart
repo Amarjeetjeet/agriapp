@@ -86,10 +86,7 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => BlocProvider(
-                          create: (context) => AddressCubit()..getShippingAddress(),
-                          child: const BillingAddress(),
-                        ),
+                        builder: (BuildContext context) => const BillingAddress(),
                       ),
                     );
                   },

@@ -1,6 +1,7 @@
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/ui/cart/ui/cart_ui.dart';
 import 'package:agriapp/ui/dashboard/home/home_ui.dart';
+import 'package:agriapp/ui/dashboard/user_detail/user_details.dart';
 import 'package:flutter/material.dart';
 
 import 'category/category_wise_product/category_wise_products.dart';
@@ -33,9 +34,7 @@ class _DashboardUiState extends State<DashboardUi> {
       const CartUi(),
     );
     pageList.add(
-      const Text(
-        'Index 4: School',
-      ),
+      const UserDetails(),
     );
     super.initState();
   }

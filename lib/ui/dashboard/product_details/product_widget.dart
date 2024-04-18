@@ -1,5 +1,6 @@
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_details.dart';
+import 'package:agriapp/ui/dashboard/product_details/product_feature_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 
@@ -25,7 +26,9 @@ class ProductWidget extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       children: [
         Card(
-          elevation: 0,
+          elevation: 1,
+          shadowColor: Colors.white,
+          surfaceTintColor: Colors.white,
           margin: EdgeInsets.zero,
           color: Colors.white,
           child: SizedBox(
@@ -35,10 +38,8 @@ class ProductWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 3.h.height(),
-                SizedBox(
-                  height: 140,
-                  width: 130,
-                  child: Image.network(productFeaturedImage ?? ""),
+                ProductFeaturedImage(
+                  productFeaturedImage: productFeaturedImage,
                 ),
                 3.h.height(),
                 Text(
@@ -100,7 +101,9 @@ class ProductWidget extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ProductDetails(productId: productId,),
+                    builder: (BuildContext context) => ProductDetails(
+                      productId: productId,
+                    ),
                   ),
                 );
               },

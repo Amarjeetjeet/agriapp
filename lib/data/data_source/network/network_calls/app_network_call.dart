@@ -1,5 +1,6 @@
 import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:agriapp/domain/models/address/address_input.dart';
+import 'package:agriapp/domain/models/user_details/user_details.dart';
 
 import '../../../../domain/models/model/shipping_address_response.dart';
 import '../base_client/base_client.dart';
@@ -7,7 +8,7 @@ import '../base_client/base_client.dart';
 class AppNetworkCall {
   static BaseClientApi baseClient = BaseClientApi();
 
-  static Future<ShippingAddressResponse> shippingAddress() async {
+  static Future<ShippingAddressResponse> billingAddress() async {
     final res = await baseClient.post(
       "user_billing_address.php",
       {
@@ -20,13 +21,24 @@ class AppNetworkCall {
     return ShippingAddressResponse.fromJson(res);
   }
 
+  static Future<UserDetailResponse> getUserDetails() async {
+    final res = await baseClient.post(
+      "user_detail.php",
+      {
+        "user": {"user_id": PreferenceUtils.getString(PreferenceUtils.USERID)},
+      },
+    );
+
+    return UserDetailResponse.fromJson(res);
+  }
+
   static Future<Map<String, dynamic>> addAddress({
     required AddressInput addressInput,
   }) async {
     final res = await baseClient.post(
-      "add_shipping_address.php",
+      "add_billing_address.php",
       {
-        "shipping_address": addressInput.toJson(),
+        "billing_address": addressInput.toJson(),
       },
     );
 

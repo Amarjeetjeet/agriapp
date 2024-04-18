@@ -43,7 +43,7 @@ class Utils {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: const Text(
             'Logout',
             style: TextStyle(color: Colors.black),

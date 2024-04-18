@@ -19,7 +19,7 @@ class _SplashScreenUiState extends State<SplashScreenUi> {
   @override
   Widget build(BuildContext context) {
     Future.microtask(
-      () => Timer(const Duration(seconds: 3), () {
+      () => Timer(const Duration(seconds: 1), () {
         debugPrint("User id is ${PreferenceUtils.getString(PreferenceUtils.USERID)}");
         if(PreferenceUtils.getString(PreferenceUtils.USERID).isNotEmpty){
           context.pushReplacementNamed(RouterUtil.dashboard);

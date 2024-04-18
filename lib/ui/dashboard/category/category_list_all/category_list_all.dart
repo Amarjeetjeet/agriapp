@@ -62,7 +62,7 @@ class _CategoryListAllState extends State<CategoryListAll> {
               ),
             ),
             title: Text(
-              productCategory?.name ?? "",
+              (productCategory?.slug ?? "").upCaseString,
               style: txtRegularF16cBlack,
             ),
             trailing: const Icon(Icons.arrow_forward_ios),

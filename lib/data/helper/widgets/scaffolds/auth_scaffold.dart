@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sizer/flutter_sizer.dart';
 import '../../barrel.dart';
 
 class AuthScaffold extends StatelessWidget {
@@ -30,21 +29,21 @@ class AuthScaffold extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: Adaptive.h(25),
+              height: MediaQuery.sizeOf(context).height * 0.25,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SvgHelper(
                     imagePath: logo,
-                    width: 130.dp,
+                    width: 150,
                     color: Colors.white,
                   ),
-                  (2.0).h.height(),
+                  20.0.height(),
                 ],
               ),
             ),
             SizedBox(
-              height: Adaptive.h(75),
+              height: MediaQuery.sizeOf(context).height * 0.75,
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -68,21 +67,23 @@ class AuthScaffold extends StatelessWidget {
                   ),
                   SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 14.dp, vertical: 32.0.dp),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 32.0,
+                      ),
                       child: Column(
                         children: [
                           Text(
                             header,
                             style: txtSemiBoldF24c383838,
                           ),
-                          5.0.h.height(),
+                          20.0.height(),
                           body ?? const SizedBox(),
                           PrimaryButton(
                             onTap: onTap,
                             btnName: btnText,
                           ),
-                          3.0.h.height(),
+                          20.0.height(),
                           InkWell(
                             onTap: onSpanTap,
                             child: Text.rich(

@@ -10,7 +10,7 @@ class HomeAppBar extends StatelessWidget {
 
   final void Function()? onSuffixIconPress;
   final Widget menu;
-  final double height = 180;
+  final double height = 230;
 
   @override
   Widget build(BuildContext context) {

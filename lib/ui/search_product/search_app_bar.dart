@@ -9,7 +9,7 @@ import '../../domain/blocs/search_cubit/search_cubit.dart';
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SearchAppBar({super.key});
 
-  static const double height = 180;
+  static const double height = 230;
 
   @override
   Size get preferredSize => const Size.fromHeight(height);

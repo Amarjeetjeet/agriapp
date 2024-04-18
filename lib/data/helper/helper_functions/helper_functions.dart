@@ -40,3 +40,20 @@ extension TimeOfDayExtension on DateTime {
     return 'Good Evening';
   }
 }
+
+
+
+extension StringX on String?{
+  String get upCaseString {
+    if((this ?? "").isEmpty){
+      return "";
+    }
+    if(this == null){
+      return "N/A";
+    }
+    if(this != null){
+      return (this ?? "").toUpperCase().replaceAll("-", " ");
+    }
+    return this ?? "";
+  }
+}

@@ -12,49 +12,50 @@ class AddressInput {
   String? shippingState;
   String? shippingCountry;
 
-  AddressInput(
-      {this.userId,
-        this.shippingFirstName,
-        this.shippingLastName,
-        this.shippingEmail,
-        this.shippingPhone,
-        this.shippingCompany,
-        this.shippingAddress1,
-        this.shippingAddress2,
-        this.shippingCity,
-        this.shippingPostcode,
-        this.shippingState,
-        this.shippingCountry});
+  AddressInput({
+    this.userId,
+    this.shippingFirstName,
+    this.shippingLastName,
+    this.shippingEmail,
+    this.shippingPhone,
+    this.shippingCompany,
+    this.shippingAddress1,
+    this.shippingAddress2,
+    this.shippingCity,
+    this.shippingPostcode,
+    this.shippingState,
+    this.shippingCountry,
+  });
 
   AddressInput.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
-    shippingFirstName = json['shipping_first_name'];
-    shippingLastName = json['shipping_last_name'];
-    shippingEmail = json['shipping_email'];
-    shippingPhone = json['shipping_phone'];
-    shippingCompany = json['shipping_company'];
-    shippingAddress1 = json['shipping_address_1'];
-    shippingAddress2 = json['shipping_address_2'];
-    shippingCity = json['shipping_city'];
-    shippingPostcode = json['shipping_postcode'];
-    shippingState = json['shipping_state'];
-    shippingCountry = json['shipping_country'];
+    shippingFirstName = json['billing_first_name'];
+    shippingLastName = json['billing_last_name'];
+    shippingEmail = json['billing_email'];
+    shippingPhone = json['billing_phone'];
+    shippingCompany = json['billing_company'];
+    shippingAddress1 = json['billing_address_1'];
+    shippingAddress2 = json['billing_address_2'];
+    shippingCity = json['billing_city'];
+    shippingPostcode = json['billing_postcode'];
+    shippingState = json['billing_state'];
+    shippingCountry = json['billing_country'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['user_id'] = userId;
-    data['shipping_first_name'] = shippingFirstName;
-    data['shipping_last_name'] = shippingLastName;
-    data['shipping_email'] = shippingEmail;
-    data['shipping_phone'] = shippingPhone;
-    data['shipping_company'] = shippingCompany;
-    data['shipping_address_1'] = shippingAddress1;
-    data['shipping_address_2'] = shippingAddress2;
-    data['shipping_city'] = shippingCity;
-    data['shipping_postcode'] = shippingPostcode;
-    data['shipping_state'] = shippingState;
-    data['shipping_country'] = shippingCountry;
+    data['billing_first_name'] = shippingFirstName;
+    data['billing_last_name'] = shippingLastName;
+    data['billing_email'] = shippingEmail;
+    data['billing_phone'] = shippingPhone;
+    data['billing_company'] = "NOT Available";
+    data['billing_address_1'] = shippingAddress1;
+    data['billing_address_2'] = shippingAddress2;
+    data['billing_city'] = shippingCity;
+    data['billing_postcode'] = shippingPostcode;
+    data['billing_state'] = shippingState;
+    data['billing_country'] = "IN";
     return data;
   }
 }

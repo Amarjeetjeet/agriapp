@@ -71,7 +71,7 @@ class CartItemCubit extends Cubit<CartState> {
   double calculateNetPrice() {
     final products = state.cartItems;
     double total = 0;
-    double shippingCharge = 80;
+    double shippingCharge = 0;
     for (var item in products) {
       total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
     }

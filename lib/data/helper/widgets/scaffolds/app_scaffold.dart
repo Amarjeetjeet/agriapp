@@ -19,6 +19,7 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+
         Image.asset(
           background,
           width: MediaQuery.sizeOf(context).width,

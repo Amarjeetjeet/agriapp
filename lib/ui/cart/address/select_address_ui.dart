@@ -1,4 +1,5 @@
 import 'package:agriapp/data/data_source/local/database_helper/database_helper.dart';
+import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
@@ -13,6 +14,7 @@ import '../../../domain/blocs/order_cubit/create_order_cubit.dart';
 import '../../../domain/models/model/shipping_address_response.dart';
 import '../../../domain/models/order/order_input.dart';
 import '../../../domain/blocs/address_cubit/address_cubit.dart';
+import 'billing_address.dart';
 import 'billing_address_form.dart';
 
 class AddressUi extends StatefulWidget {
@@ -31,8 +33,8 @@ class _AddressUiState extends State<AddressUi> {
 
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
-  late TextEditingController streetAddressController;
-  late TextEditingController apartmentAddressController;
+  late TextEditingController address1Controller;
+  late TextEditingController address2Controller;
   late TextEditingController townCityController;
   late TextEditingController stateCountyController;
   late TextEditingController postcodeController;
@@ -43,8 +45,8 @@ class _AddressUiState extends State<AddressUi> {
   void initState() {
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
-    streetAddressController = TextEditingController();
-    apartmentAddressController = TextEditingController();
+    address1Controller = TextEditingController();
+    address2Controller = TextEditingController();
     townCityController = TextEditingController();
     stateCountyController = TextEditingController();
     postcodeController = TextEditingController();
@@ -57,8 +59,7 @@ class _AddressUiState extends State<AddressUi> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) =>
-              AddressCubit()..getShippingAddress(),
+          create: (BuildContext context) => AddressCubit()..getBillingAddress(),
         ),
         BlocProvider(
           create: (BuildContext context) => CreateOrderCubit(),
@@ -70,8 +71,8 @@ class _AddressUiState extends State<AddressUi> {
           hideCartIcon: false,
         ),
         bottomNavigationBar: BlocBuilder<AddressCubit, StateApi>(
-          builder: (context, state) {
-            if (state is SuccessState) {
+          builder: (context, addressState) {
+            if (addressState is SuccessState) {
               return BlocConsumer<CreateOrderCubit, FormStateApi>(
                 listener: (context, createOrderState) {
                   if (createOrderState.formLoadingState ==
@@ -87,10 +88,13 @@ class _AddressUiState extends State<AddressUi> {
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.success) {
                     var snackBar = SnackBar(
-                      content: Text((createOrderState.success as OrderCreateResponse).messege ?? ""),
+                      content: Text(
+                          (createOrderState.success as OrderCreateResponse)
+                                  .messege ??
+                              ""),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    context.pushReplacementNamed(RouterUtil.homeUi);
+                    context.pushReplacementNamed(RouterUtil.dashboard);
                     DatabaseHelper.clearCart();
                   }
                   if (createOrderState.formLoadingState ==
@@ -110,12 +114,13 @@ class _AddressUiState extends State<AddressUi> {
                     ),
                     child: PrimaryButton(
                       onTap: () async {
+                        ShippingAddressResponse? shippingAddressResponse = addressState.success;
                         OrderInput orderInput = OrderInput(
                           createOrder: CreateOrder(
                             productData:
                                 widget.orderInput.createOrder?.productData,
                             shippingData: ShippingData(
-                              deviveryCharg: "80",
+                              deviveryCharg: "0",
                             ),
                             paymentData: PaymentData(
                               paymentMethod: "cod",
@@ -126,17 +131,18 @@ class _AddressUiState extends State<AddressUi> {
                               cuponType: "",
                             ),
                             userData: UserData(
-                                userId: "2",
-                                firstName: "Demo",
-                                lastName: "user",
-                                company: "dummy company",
-                                address1: "Address 1",
-                                address2: "Address 2",
-                                email: "Dummy@gmail.com",
-                                city: "Ahemedabad",
-                                state: "Gujarat",
-                                postcode: "380007",
-                                country: "IN"),
+                              userId: PreferenceUtils.getString(PreferenceUtils.USERID),
+                              firstName: shippingAddressResponse?.userBillingAddress?.billingFirstName,
+                              lastName: shippingAddressResponse?.userBillingAddress?.billingLastName,
+                              company: "N/A",
+                              address1: shippingAddressResponse?.userBillingAddress?.billingAddress1,
+                              address2: shippingAddressResponse?.userBillingAddress?.billingAddress2,
+                              email: PreferenceUtils.getString(PreferenceUtils.USER_EMAIL),
+                              city: shippingAddressResponse?.userBillingAddress?.billingCity,
+                              state: shippingAddressResponse?.userBillingAddress?.billingState,
+                              postcode: shippingAddressResponse?.userBillingAddress?.billingPostcode,
+                              country: shippingAddressResponse?.userBillingAddress?.billingCountry,
+                            ),
                           ),
                         );
                         context
@@ -158,19 +164,56 @@ class _AddressUiState extends State<AddressUi> {
               LoadingState() => const Loader(),
               SuccessState() => buildSizedBox(state.success),
               FailureState() => DisplayError(errorMessage: state.errorMessage),
-              EmptyState() => Center(
-                  child: PrimaryIconButton(
-                    onTap: () {},
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    btnName: "Add New Address",
-                  ),
-                ),
+              EmptyState() => addAddress(context),
             };
           },
         ),
+      ),
+    );
+  }
+
+  Widget addAddress(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            address,
+            height: 150,
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              "Looks likes your address is not setup!",
+              textAlign: TextAlign.center,
+              style: txtMediumF14c383838,
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          Center(
+            child: PrimaryIconButton(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const BillingAddress(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              btnName: "Add New Address",
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -248,8 +291,8 @@ class _AddressUiState extends State<AddressUi> {
                 formKey: _formKey,
                 firstNameController: firstNameController,
                 lastNameController: lastNameController,
-                streetAddressController: streetAddressController,
-                apartmentAddressController: apartmentAddressController,
+                address1Controller: address1Controller,
+                address2Controller: address2Controller,
                 townCityController: townCityController,
                 stateCountyController: stateCountyController,
                 postcodeController: postcodeController,

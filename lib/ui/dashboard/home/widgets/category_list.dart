@@ -26,7 +26,7 @@ class CategoryList extends StatelessWidget {
           SuccessState() => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                1.3.h.height(),
+                10.0.height(),
                 HeaderWithButton(
                   title: 'Category',
                   btnText: 'See All',
@@ -43,9 +43,8 @@ class CategoryList extends StatelessWidget {
                   },
                 ),
                 1.h.height(),
-                Container(
-                  height: 22.h,
-                  alignment: Alignment.center,
+                SizedBox(
+                  height: 145.0,
                   child: ListView.builder(
                     itemCount: (state.success as CategoryListResponse)
                         .productCategries
@@ -57,94 +56,7 @@ class CategoryList extends StatelessWidget {
                           (state.success as CategoryListResponse)
                               .productCategries
                               ?.category?[i];
-                      return Visibility(
-                        visible: productCategory?.parent == 0,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: InkWell(
-                            onTap: () {
-                              if ((productCategory?.slug ?? "")
-                                      .toUpperCase() ==
-                                  "OFFERS") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        CategoryWiseProducts(
-                                      categoryId: productCategory?.catID ?? 0,
-                                      categoryName: productCategory?.slug,
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              if ((productCategory?.slug ?? "")
-                                      .toUpperCase() ==
-                                  "TRAPS-AND-LURES") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        CategoryWiseProducts(
-                                      categoryId: productCategory?.catID ?? 0,
-                                      categoryName: productCategory?.slug,
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      SubCategoryList(
-                                    categoryId: productCategory?.catID ?? 0,
-                                    categoryName:
-                                        productCategory?.slug ?? "",
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                IconButton.outlined(
-                                  onPressed: null,
-                                  style: IconButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.all(16.0),
-                                    side: BorderSide(
-                                      width: 1,
-                                      color: cD9D9D9,
-                                    ),
-                                  ),
-                                  icon: Image.network(
-                                    productCategory?.image ?? "",
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (c, i, s) => Image.asset(
-                                      catImg,
-                                      width: 40,
-                                    ),
-                                  ),
-                                ),
-                                1.h.height(),
-                                SizedBox(
-                                  width: 80,
-                                  child: Text(
-                                    (productCategory?.slug ?? "").toUpperCase().replaceAll("-", " "),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      return categoryCircleList(productCategory, context);
                     },
                   ),
                 ),
@@ -154,6 +66,93 @@ class CategoryList extends StatelessWidget {
           EmptyState() => const SizedBox(),
         };
       },
+    );
+  }
+
+  Widget categoryCircleList(
+    Category? productCategory,
+    BuildContext context,
+  ) {
+    return Visibility(
+      visible: productCategory?.parent == 0,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16.0),
+        child: InkWell(
+          onTap: () {
+            if ((productCategory?.slug ?? "").toUpperCase() == "OFFERS") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => CategoryWiseProducts(
+                    categoryId: productCategory?.catID ?? 0,
+                    categoryName: productCategory?.slug,
+                  ),
+                ),
+              );
+              return;
+            }
+            if ((productCategory?.slug ?? "").toUpperCase() ==
+                "TRAPS-AND-LURES") {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => CategoryWiseProducts(
+                    categoryId: productCategory?.catID ?? 0,
+                    categoryName: productCategory?.slug,
+                  ),
+                ),
+              );
+              return;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => SubCategoryList(
+                  categoryId: productCategory?.catID ?? 0,
+                  categoryName: productCategory?.slug ?? "",
+                ),
+              ),
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              IconButton.outlined(
+                onPressed: null,
+                style: IconButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.all(16.0),
+                  side: BorderSide(
+                    width: 1,
+                    color: cD9D9D9,
+                  ),
+                ),
+                icon: Image.network(
+                  productCategory?.image ?? "",
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder: (c, i, s) => Image.asset(
+                    catImg,
+                    width: 40,
+                  ),
+                ),
+              ),
+              1.h.height(),
+              SizedBox(
+                width: 80,
+                child: Text(
+                  (productCategory?.slug ?? "").upCaseString,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

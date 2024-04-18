@@ -25,3 +25,4 @@ String user = "assets/user.png";
 String home = "assets/home.svg";
 String discount = "assets/discount.svg";
 String userSvg = "assets/user_svg.svg";
+String address = "assets/address.png";

@@ -3,7 +3,6 @@ import 'package:agriapp/ui/dashboard/home/widgets/home_drawer.dart';
 import 'package:agriapp/ui/dashboard/home/widgets/product_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/router/rounter_config.dart';
@@ -26,27 +25,15 @@ class _HomeUiState extends State<HomeUi> {
   Widget build(BuildContext context) {
     return AppScaffold(
       key: _key,
-      // appBar: HomeAppBar(
-      //   onSuffixIconPress: () {
-      //     context.pushNamed(RouterUtil.notificationUi);
-      //   },
-      //   menu: Builder(builder: (context) {
-      //     return IconButton.outlined(
-      //       style: buildIconOutlineStyleFrom(),
-      //       onPressed: () => Scaffold.of(context).openDrawer(),
-      //       icon: SvgHelper(
-      //         imagePath: menu,
-      //       ),
-      //     );
-      //   }),
-      // ),
       drawer: const HomeDrawer(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0.0),
-          child: Column(
-            children: [
-              HomeAppBar(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            floating: true,
+            automaticallyImplyLeading: false,
+            expandedHeight: 180,
+            flexibleSpace: FlexibleSpaceBar(
+              background: HomeAppBar(
                 onSuffixIconPress: () {
                   context.pushNamed(RouterUtil.notificationUi);
                 },
@@ -60,25 +47,38 @@ class _HomeUiState extends State<HomeUi> {
                   );
                 }),
               ),
-              const CategoryList(),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: featuredProductCategoryList.length,
-                itemBuilder: (context, index) {
-                  return BlocProvider(
-                    create: (context) => FeaturedProductCubit()
-                      ..featuredProductList(
-                        productCategoryId: featuredProductCategoryList[index],
-                      ),
-                    child: const ProductList(),
-                  );
-                },
-              ),
-              10.h.height(),
-            ],
+            ),
           ),
-        ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: CategoryList(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: featuredProductCategoryList.length,
+                    itemBuilder: (context, index) {
+                      return BlocProvider(
+                        create: (context) => FeaturedProductCubit()
+                          ..featuredProductList(
+                            productCategoryId:
+                                featuredProductCategoryList[index],
+                          ),
+                        child: const ProductList(),
+                      );
+                    },
+                  ),
+                ),
+                10.0.height(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

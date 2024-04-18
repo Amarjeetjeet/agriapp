@@ -6,8 +6,7 @@ sealed class StateApi extends Equatable {
 }
 
 class LoadingState extends StateApi {
-  @override
-  List<Object?> get props => [];
+
 }
 
 class SuccessState<T> extends StateApi {

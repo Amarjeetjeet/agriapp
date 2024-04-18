@@ -19,7 +19,7 @@ class SubCategoryList extends StatelessWidget {
       create: (context) => CategoryCubit()..subCategory(categoryId: categoryId),
       child: AppScaffold(
         appBar: CustomAppBar(
-          title: (categoryName ?? "").toUpperCase().replaceAll("-", " "),
+          title: categoryName.upCaseString,
           onBackPress: () {
             Navigator.pop(context);
           },
@@ -53,7 +53,7 @@ class SubCategoryList extends StatelessWidget {
                             builder: (BuildContext context) =>
                                 CategoryWiseProducts(
                               categoryId: category?.catID ?? 0,
-                              categoryName: category?.catName,
+                              categoryName: (category?.slug ?? "").upCaseString,
                             ),
                           ),
                         );
@@ -79,7 +79,7 @@ class SubCategoryList extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        (category?.slug ?? "").toUpperCase().replaceAll("-", " "),
+                        (category?.slug ?? "").upCaseString,
                         style: txtRegularF16cBlack,
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),

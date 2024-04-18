@@ -23,7 +23,6 @@ class ProductList extends StatelessWidget {
           EmptyState() => const SizedBox(),
           SuccessState() => Column(
               children: [
-                1.3.h.height(),
                 HeaderWithButton(
                   title: (state.success as FeaturedProduct)
                           .featuredCategories
@@ -48,9 +47,8 @@ class ProductList extends StatelessWidget {
                     );
                   },
                 ),
-                1.h.height(),
                 Container(
-                  height: 310,
+                  height: 330,
                   alignment: Alignment.center,
                   child: ListView.builder(
                     itemCount: (state.success as FeaturedProduct)
@@ -63,7 +61,7 @@ class ProductList extends StatelessWidget {
                           .featuredCategories
                           ?.product?[i];
                       return Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
+                        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0 ,top: 8.0),
                         child: ProductWidget(
                           productId: product?.productId,
                           productName: product?.productName,
@@ -75,6 +73,9 @@ class ProductList extends StatelessWidget {
                       );
                     },
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
               ],
             ),

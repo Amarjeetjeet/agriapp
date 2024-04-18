@@ -1,4 +1,5 @@
 import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
+import 'package:agriapp/domain/blocs/address_cubit/add_address_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import 'data/data_source/local/database_helper/database_helper.dart';
 import 'data/helper/barrel.dart';
 import 'data/router/rounter_config.dart';
+import 'domain/blocs/address_cubit/address_cubit.dart';
 import 'domain/blocs/cart_cubit/cart_cubit.dart';
 import 'domain/blocs/category_cubit/category_cubit.dart';
 import 'domain/blocs/featured_product_cubit/featured_product_cubit.dart';
@@ -69,6 +71,12 @@ class _EntryPointState extends State<EntryPoint> {
           ),
           BlocProvider(
             create: (context) => FeaturedProductCubit(),
+          ),
+          BlocProvider(
+            create: (context) => AddAddressCubit(),
+          ),
+          BlocProvider(
+            create: (context) => AddressCubit(),
           ),
         ],
         child: MaterialApp.router(

@@ -29,7 +29,7 @@ class CategoryWiseProducts extends StatelessWidget {
         ),
       child: AppScaffold(
         appBar: CustomAppBar(
-          title: (categoryName ?? "").toUpperCase().replaceAll("-", " "),
+          title: (categoryName ?? "").upCaseString,
           onBackPress: () => context.pop(),
         ),
         body: BlocBuilder<CategoryCubit, StateApi>(
@@ -38,77 +38,50 @@ class CategoryWiseProducts extends StatelessWidget {
               LoadingState() => const Loader(),
               FailureState() => DisplayError(errorMessage: state.errorMessage),
               EmptyState() => const EmptyList(),
-              SuccessState() => AlignedGridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 8,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: ((state.success as CategoryByProduct)
-                              .categoryProductList
-                              ?.product ??
-                          [])
-                      .length,
-                  itemBuilder: (context, index) {
-                    CategoryByProduct? product = state.success;
-                    if (product?.categoryProductList?.product?[index]
-                            .isVariationProduct ??
-                        false) {
-                      return ProductVariationWidget(
-                        productName: product?.categoryProductList
-                                ?.product?[index].productName ??
-                            "",
-                        productMinPrice: product
-                                ?.categoryProductList
-                                ?.product?[index]
-                                .variation?[0]
-                                .productSalePrice ??
-                            "",
-                        productMaxPrice: product
-                                ?.categoryProductList
-                                ?.product?[index]
-                                .variation
-                                ?.last
-                                .productSalePrice ??
-                            "",
-                        productId: product?.categoryProductList?.product?[index]
-                                .productId ??
-                            0,
-                        productFeaturedImage: product
-                                ?.categoryProductList
-                                ?.product?[index]
-                                .productImageFeaturedImageLink ??
-                            "",
-                        productMinRegular: product
-                                ?.categoryProductList
-                                ?.product?[index]
-                                .variation?[0]
-                                .productRegularPrice ??
-                            "",
-                      );
-                    }
-                    return ProductWidget(
-                      productName: product?.categoryProductList?.product?[index]
-                              .productName ??
-                          "",
-                      productSalePrice: product?.categoryProductList
-                              ?.product?[index].productSalePrice ??
-                          "",
-                      productRegularPrice: product?.categoryProductList
-                              ?.product?[index].productRegularPrice ??
-                          "",
-                      productId: product?.categoryProductList?.product?[index]
-                              .productId ??
-                          0,
-                      productFeaturedImage: product?.categoryProductList
-                              ?.product?[index].productImageFeaturedImageLink ??
-                          "",
-                    );
-                  },
-                ),
+              SuccessState() => buildProductGridView(state.success),
             };
           },
         ),
       ),
+    );
+  }
+
+  AlignedGridView buildProductGridView(CategoryByProduct? categoryByProduct) {
+    return AlignedGridView.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      padding: const EdgeInsets.all(16),
+      itemCount: (categoryByProduct?.categoryProductList?.product ?? []).length,
+      itemBuilder: (context, index) {
+        Product? productDetail =
+            categoryByProduct?.categoryProductList?.product?[index];
+        if (productDetail?.isVariationProduct ?? false) {
+          return buildProductVariationWidget(productDetail);
+        }
+        return buildProductWidget(productDetail);
+      },
+    );
+  }
+
+  ProductWidget buildProductWidget(Product? productDetail) {
+    return ProductWidget(
+      productName: productDetail?.productName ?? "",
+      productSalePrice: productDetail?.productSalePrice ?? "",
+      productRegularPrice: productDetail?.productRegularPrice ?? "",
+      productId: productDetail?.productId ?? 0,
+      productFeaturedImage: productDetail?.productImageFeaturedImageLink ?? "",
+    );
+  }
+
+  ProductVariationWidget buildProductVariationWidget(Product? productDetail) {
+    return ProductVariationWidget(
+      productName: productDetail?.productName ?? "",
+      productMinPrice: productDetail?.variation?[0].productSalePrice ?? "",
+      productMaxPrice: productDetail?.variation?.last.productSalePrice ?? "",
+      productId: productDetail?.productId ?? 0,
+      productFeaturedImage: productDetail?.productImageFeaturedImageLink ?? "",
+      productMinRegular: productDetail?.variation?[0].productRegularPrice ?? "",
     );
   }
 }
