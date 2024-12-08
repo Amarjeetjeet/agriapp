@@ -1,4 +1,3 @@
-import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
 import 'package:agriapp/domain/blocs/auth_cubit/auth_cubit.dart';
 import 'package:agriapp/ui/auth/login/login_ui.dart';
 import 'package:agriapp/ui/auth/password/change_password/change_password_ui.dart';
@@ -7,11 +6,11 @@ import 'package:agriapp/ui/auth/password/otp_ui/otp_ui.dart';
 import 'package:agriapp/ui/auth/register/register_ui.dart';
 import 'package:agriapp/ui/dashboard/dashboard_ui.dart';
 import 'package:agriapp/ui/splash/splash_screen_ui.dart';
-import 'package:agriapp/ui/static_web_pages/contact_us.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../ui/cart/address/select_address_ui.dart';
+import '../../domain/blocs/banner_and_brand_cubit/banner_cubit.dart';
+import '../../domain/blocs/banner_and_brand_cubit/brand_cubit.dart';
 import '../../ui/dashboard/home/home_ui.dart';
 import '../../ui/dashboard/notifications/notifications_ui.dart';
 import '../../ui/splash/intro_screen.dart';
@@ -91,7 +90,13 @@ class RouterUtil {
       GoRoute(
         path: dashboard,
         name: dashboard,
-        builder: (context, state) => const DashboardUi(),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => BannerAndCompanyCubit()..bannerList()),
+            BlocProvider(create: (context) => BrandCubit()..brandList())
+          ],
+          child: const DashboardUi(),
+        ),
       ),
     ],
   );

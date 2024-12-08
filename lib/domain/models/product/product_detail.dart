@@ -1,5 +1,4 @@
 import 'package:agriapp/domain/models/product/prodct_by_category_response.dart';
-import 'package:flutter/cupertino.dart';
 
 class ProductDetail {
   ProductDetails? productDetails;
@@ -118,7 +117,6 @@ class ProductDetails {
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
     featureImagesList = <String>[];
-
     productId = json['product_id'];
     productType = json['product_type'];
     productName = json['product_name'];
@@ -147,7 +145,15 @@ class ProductDetails {
     productWeight = json['product_weight'];
     productLength = json['product_length'];
     productWidth = json['product_width'];
-    productImageFeaturedImageLink = json['product_image_featured_image_link'];
+    try {
+      if (json['product_image_featured_image_link'].runtimeType == bool) {
+        productImageFeaturedImageLink = [];
+        return;
+      }
+      productImageFeaturedImageLink = json['product_image_featured_image_link'];
+    } catch (e) {
+      productImageFeaturedImageLink = [];
+    }
     productHeight = json['product_height'];
     productDimensions = json['product_dimensions'];
     productParentId = json['product_parent_id'];
@@ -174,8 +180,7 @@ class ProductDetails {
       });
     }
     if (json['product_gallery_image_ids'] != null) {
-      featureImagesList
-          ?.add(json['product_image_featured_image_link'][0]);
+      featureImagesList?.add(json['product_image_featured_image_link'][0]);
       json['product_gallery_image_ids'].asMap().forEach((index, value) {
         featureImagesList?.add(json["$index"]["product_image_link"]);
       });

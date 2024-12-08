@@ -61,13 +61,15 @@ class HomeAppBar extends StatelessWidget {
                       //   // PreferenceUtils.getString(PreferenceUtils.USERNAME),
                       //   style: txtMediumF18cWhite,
                       // ),
-                      IconButton.outlined(
-                        style: buildIconOutlineStyleFrom(),
-                        onPressed: onSuffixIconPress,
-                        icon: SvgHelper(
-                          imagePath: notificationIcon,
-                        ),
-                      ),
+
+                      const SizedBox()
+                      // IconButton.outlined(
+                      //   style: buildIconOutlineStyleFrom(),
+                      //   onPressed: onSuffixIconPress,
+                      //   icon: SvgHelper(
+                      //     imagePath: notificationIcon,
+                      //   ),
+                      // ),
                     ],
                   ),
                   2.1.h.height(),

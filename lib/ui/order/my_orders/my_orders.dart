@@ -19,17 +19,48 @@ class MyOrders extends StatelessWidget {
         child: BlocBuilder<OrderCubit, StateApi>(
           builder: (context, state) {
             return switch (state) {
-              LoadingState() => Loader(),
+              LoadingState() => const Loader(),
               SuccessState() => orderCard(state.success),
-              FailureState() => DisplayError(
-                  errorMessage: "Empty",
+              FailureState() => const DisplayError(
+                  errorMessage: "Something went wrong!",
                 ),
-              EmptyState() => DisplayError(errorMessage: "Empty")
+              EmptyState() => const DisplayError(errorMessage: "No Order Found")
             };
           },
         ),
       ),
     );
+  }
+
+  String orderDate(String date) {
+    try {
+      DateTime parsedDate = DateTime.parse(date);
+
+      // List of month names
+      List<String> months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ];
+
+      // Format date manually
+      String formattedDate =
+          "${months[parsedDate.month - 1]} ${parsedDate.day}, ${parsedDate.year}";
+
+      print(formattedDate); // Output: October 23, 2024
+      return formattedDate;
+    } catch (e) {
+      return "Not available";
+    }
   }
 
   Widget orderCard(Map<String, dynamic> orderData) {
@@ -49,13 +80,18 @@ class MyOrders extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Image.asset(
-                    catImg,
-                    width: 100,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.network(
+                      order["product_list"][0]["product_image_link"],
+                      width: 100,
+                      height: 100,
+                    ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
-                      order["0"]["product"]["product_name"],
+                      orderDate(order["get_date_created"]["date"]),
                       style: txtMediumF14c383838,
                     ),
                   ),
@@ -75,10 +111,73 @@ class MyOrders extends StatelessWidget {
                   ),
                 ],
               ),
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: order["product_list"].length ?? 0,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 7,
+                          child: Text(
+                            "${order["product_list"][index]["product_name"] ?? ""}"
+                            " x ${order["product_list"][index]["quantity"] ?? ""}",
+                            style: txtMediumF14c383838.copyWith(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(
+                            "₹${order["product_list"][index]["total"] ?? ""}",
+                            style: txtMediumF14c383838.copyWith(
+                              color: primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider();
+                },
+              ),
+              const SizedBox(
+                height: 2,
+              ),
+              const Divider(),
+              const SizedBox(
+                height: 8,
+              ),
+              if ((order["discount"] ?? 0) != 0) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "Discount: ₹ ${order["discount"].toString()}",
+                    style: txtMediumF14c383838,
+                  ),
+                ),
+              ],
+              if ((order["shipping_charge"] ?? "0") != "0") ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    "shipping charge: ₹ ${order["shipping_charge"].toString()}",
+                    style: txtMediumF14c383838,
+                  ),
+                ),
+              ],
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  "shipping charge: ₹ ${order["shipping_charge"].toString()}",
+                  order["payment_method"].toString(),
                   style: txtMediumF14c383838,
                 ),
               ),
@@ -88,6 +187,56 @@ class MyOrders extends StatelessWidget {
                   "Total: ₹ ${order["total"].toString()}",
                   style: txtBoldF14cPrimary,
                 ),
+              ),
+              ExpansionTile(
+                expandedAlignment: Alignment.centerLeft,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                title: const Text('BILLING ADDRESS'),
+                subtitle: Text(order["billing_address"]["billing_company"] ?? ""),
+                children: <Widget>[
+                  addressTile(
+                    "${order["billing_address"]["billing_first_name"]} "
+                    "${order["billing_address"]["billing_last_name"]}",
+                  ),
+                  addressTile(
+                    "${order["billing_address"]["billing_address_1"]} "
+                    "${order["billing_address"]["billing_address_2"]}",
+                  ),
+                  addressTile(
+                    "${order["billing_address"]["billing_city"]} "
+                    "${order["billing_address"]["billing_postcode"]}",
+                  ),
+                  addressTile(
+                    "${order["billing_address"]["billing_state"]} "
+                    "${order["billing_address"]["billing_country"]}",
+                  ),
+                  addressTile("${order["billing_address"]["billing_email"]} "),
+                  addressTile("${order["billing_address"]["billing_phone"]} "),
+                ],
+              ),
+              ExpansionTile(
+                expandedAlignment: Alignment.centerLeft,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                title: const Text('SHIPPING ADDRESS'),
+                subtitle: Text(order["shipping_address"]["shipping_company"] ?? ""),
+                children: <Widget>[
+                  addressTile(
+                    "${order["shipping_address"]["shipping_first_name"]} "
+                    "${order["shipping_address"]["shipping_last_name"]}",
+                  ),
+                  addressTile(
+                    "${order["shipping_address"]["shipping_address_1"]} "
+                    "${order["shipping_address"]["shipping_address_2"]}",
+                  ),
+                  addressTile(
+                    "${order["shipping_address"]["shipping_city"]} "
+                    "${order["shipping_address"]["shipping_postcode"]}",
+                  ),
+                  addressTile(
+                    "${order["shipping_address"]["shipping_state"]} "
+                    "${order["shipping_address"]["shipping_country"]}",
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -103,6 +252,16 @@ class MyOrders extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget addressTile(String? name) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, bottom: 4),
+      child: Text(
+        name ?? "",
+        style: txtMediumF14c383838,
+      ),
     );
   }
 }

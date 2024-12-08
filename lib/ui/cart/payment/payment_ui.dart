@@ -1,6 +1,10 @@
-import '../../../data/helper/barrel.dart';
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+// import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
+
+import '../../../data/helper/barrel.dart';
+import '../../../data/helper/hash_service.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/price_calculation.dart';
 
@@ -11,8 +15,21 @@ class PaymentUi extends StatefulWidget {
   State<PaymentUi> createState() => _PaymentUiState();
 }
 
-class _PaymentUiState extends State<PaymentUi> {
+class _PaymentUiState extends State<PaymentUi>{
+    // implements PayUCheckoutProProtocol {
   bool orderVisible = true;
+
+  // late PayUCheckoutProFlutter _checkoutPro;
+
+  List<String> paymentMethod = ["Cash On Delivery", "payUBiz"];
+
+  late String selectedValue;
+
+  @override
+  void initState() {
+    selectedValue = paymentMethod[0];
+    // _checkoutPro = PayUCheckoutProFlutter(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,19 +103,32 @@ class _PaymentUiState extends State<PaymentUi> {
                 ),
               ),
               10.0.height(),
-              RadioListTile(
-                tileColor: Colors.white,
-                selectedTileColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                value: "true",
-                selected: true,
-                groupValue: "true",
-                title: Text(
-                  "Cash On Delivery",
-                  style: txtMediumF18c7C7C7C,
-                ),
-                onChanged: (value) {},
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: paymentMethod.length,
+                itemBuilder: (context, index) {
+                  return RadioListTile(
+                    tileColor: Colors.white,
+                    selectedTileColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    value: paymentMethod[index],
+                    selected: selectedValue == paymentMethod[index],
+                    groupValue: selectedValue,
+                    title: Text(
+                      paymentMethod[index],
+                      style: txtMediumF18c7C7C7C,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedValue = value ?? "";
+                      });
+                    },
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 8);
+                },
               ),
               10.0.height(),
               const PriceCalculation(
@@ -142,5 +172,31 @@ class _PaymentUiState extends State<PaymentUi> {
         ),
       ),
     );
+  }
+
+  @override
+  generateHash(Map response) {
+    Map hashResponse = HashService.generateHash(response);
+    _checkoutPro.hashGenerated(hash: hashResponse);
+  }
+
+  @override
+  onError(Map? response) {
+    log(response.toString());
+  }
+
+  @override
+  onPaymentCancel(Map? response) {
+    log(response.toString());
+  }
+
+  @override
+  onPaymentFailure(response) {
+    log(response.toString());
+  }
+
+  @override
+  onPaymentSuccess(response) {
+    log(response.toString());
   }
 }

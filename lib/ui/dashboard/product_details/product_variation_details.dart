@@ -42,9 +42,9 @@ class _ProductVariationDetailsState extends State<ProductVariationDetails> {
   @override
   Widget build(BuildContext context) {
     Future.microtask(
-          () => context.read<CartItemCubit>().getQuantity(
-        productId: productID ?? 0,
-      ),
+      () => context.read<CartItemCubit>().getQuantity(
+            productId: productID ?? 0,
+          ),
     );
     return BlocProvider(
       create: (context) => ProductDetailCubit()
@@ -197,9 +197,14 @@ class _ProductVariationDetailsState extends State<ProductVariationDetails> {
                 return Builder(
                   builder: (BuildContext context) {
                     return Image.network(
-                      productDetail?.productDetails
-                              ?.productImageFeaturedImageLink?[0] ??
-                          "",
+                      (productDetail?.productDetails
+                                      ?.productImageFeaturedImageLink ??
+                                  [])
+                              .isEmpty
+                          ? ""
+                          : productDetail?.productDetails
+                                  ?.productImageFeaturedImageLink?[0] ??
+                              "",
                       fit: BoxFit.cover,
                     );
                   },

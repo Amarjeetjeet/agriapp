@@ -1,8 +1,59 @@
+
+
+
+
+
+
+
+/*
+
+// Routing for app
+- routing
+// Network and Local apis call
+- data
+  - network call
+
+// Common model and bloc/cubit
+- domain
+  // Common model
+  - model
+  // Common Bloc
+  - bloc/cubit
+  // Common repository
+  - repository
+
+// Each UI has separate screen
+- ui
+  - auth
+    - model
+    - repository
+    - bloc/cubit
+    - presentation
+      - widgets
+  - home
+    - model
+    - repository
+    - bloc/cubit
+    - presentation
+      - widgets
+
+ */
+
+
+
+
+
+
+
+
+
+
 import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:agriapp/data/helper/widgets/utils.dart';
 import 'package:agriapp/domain/blocs/address_cubit/add_address_cubit.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/models/address/address_input.dart';
+import 'package:agriapp/ui/cart/payment/payment_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +63,9 @@ import '../../../domain/blocs/address_cubit/address_cubit.dart';
 import 'billing_address_form.dart';
 
 class BillingAddress extends StatefulWidget {
-  const BillingAddress({super.key});
+  const BillingAddress({super.key, required this.isFromCart});
+
+  final bool isFromCart;
 
   @override
   State<BillingAddress> createState() => _BillingAddressState();
@@ -52,14 +105,14 @@ class _BillingAddressState extends State<BillingAddress> {
       ),
       body: BlocConsumer<AddAddressCubit, FormStateApi>(
         listener: (context, state) {
-          if(state.formLoadingState == FormLoadingState.loading){
+          if (state.formLoadingState == FormLoadingState.loading) {
             Utils(context).startLoading();
           }
-          if(state.formLoadingState != FormLoadingState.loading){
+          if (state.formLoadingState != FormLoadingState.loading) {
             Utils(context).stopLoading();
             context.pop();
           }
-          if((state.errorMessage ?? "").isNotEmpty){
+          if ((state.errorMessage ?? "").isNotEmpty) {
             var snackBar = SnackBar(
               content: Text(state.errorMessage ?? "Something went wrong!!"),
             );
@@ -117,11 +170,20 @@ class _BillingAddressState extends State<BillingAddress> {
         shippingPhone: phoneController.text,
       );
       // Place order logic here
-
-
       context
           .read<AddAddressCubit>()
           .addShippingAddress(addressInput: addressInput);
+
+      if (widget.isFromCart) {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const PaymentUi(),
+          ),
+        );
+        return;
+      }
+
       debugPrint('Address input ${addressInput.toJson()}');
     }
   }

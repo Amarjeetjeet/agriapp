@@ -92,13 +92,13 @@ class ProductData {
 
   ProductData.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
-    qty = json['Qty'];
+    qty = json['qty'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['product_id'] = productId;
-    data['Qty'] = qty;
+    data['qty'] = qty;
     return data;
   }
 

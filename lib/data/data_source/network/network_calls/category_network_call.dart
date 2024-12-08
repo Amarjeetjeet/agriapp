@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:agriapp/data/data_source/local/preference_util/preference_utils.dart';
 import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain/blocs/order/order_response.dart';
+import '../../../../domain/models/banner_and_brand/banner_list_response.dart';
+import '../../../../domain/models/banner_and_brand/brand_list_response.dart';
 import '../../../../domain/models/category/category_list_response.dart';
 import '../../../../domain/models/category/sub_category_list.dart';
 import '../../../../domain/models/product/featured_product_response.dart';
@@ -102,6 +106,22 @@ class ProductNetworkModule {
     return SearchResponse.fromJson(res);
   }
 
+  static Future<BannerListResponse> bannerList() async {
+    final res = await baseClient.get(
+      api: "banner_list.php",
+    );
+
+    return BannerListResponse.fromJson(res);
+  }
+
+  static Future<BrandListResponse> brandList() async {
+    final res = await baseClient.get(
+      api: "brand_list.php",
+    );
+
+    return BrandListResponse.fromJson(res);
+  }
+
   static Future<Map<String, dynamic>>? orderList() async {
     final res = await baseClient.post(
       "order_list_user.php",
@@ -111,7 +131,6 @@ class ProductNetworkModule {
         }
       },
     );
-
     return res;
   }
 }

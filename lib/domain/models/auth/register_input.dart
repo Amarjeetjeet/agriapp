@@ -5,12 +5,13 @@ class RegisterInput {
   String? email;
   String? password;
 
-  RegisterInput(
-      {this.username,
-        this.firstName,
-        this.lastName,
-        this.email,
-        this.password});
+  RegisterInput({
+    this.username,
+    this.firstName,
+    this.lastName,
+    this.email,
+    this.password,
+  });
 
   RegisterInput.fromJson(Map<String, dynamic> json) {
     username = json['username'];

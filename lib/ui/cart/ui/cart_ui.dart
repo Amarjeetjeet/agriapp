@@ -5,17 +5,36 @@ import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 
 import '../../../data/helper/barrel.dart';
 import '../../../data/router/rounter_config.dart';
 import '../../../domain/blocs/cart_cubit/cart_state.dart';
-import '../../../domain/blocs/address_cubit/address_cubit.dart';
 import '../address/select_address_ui.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/price_calculation.dart';
 
-class CartUi extends StatelessWidget {
+class CartUi extends StatefulWidget {
   const CartUi({super.key});
+
+  @override
+  State<CartUi> createState() => _CartUiState();
+}
+
+class _CartUiState extends State<CartUi> implements PayUCheckoutProProtocol {
+  bool orderVisible = true;
+
+  late PayUCheckoutProFlutter _checkoutPro;
+
+  List<String> paymentMethod = ["Online", "Cash On Delivery"];
+
+  late String selectedValue;
+
+  @override
+  void initState() {
+    selectedValue = paymentMethod[0];
+    _checkoutPro = PayUCheckoutProFlutter(this);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +98,34 @@ class CartUi extends StatelessWidget {
                           ),
                         ),
                         10.0.height(),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: paymentMethod.length,
+                          itemBuilder: (context, index) {
+                            return RadioListTile(
+                              tileColor: Colors.white,
+                              selectedTileColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              value: paymentMethod[index],
+                              selected: selectedValue == paymentMethod[index],
+                              groupValue: selectedValue,
+                              title: Text(
+                                paymentMethod[index],
+                                style: txtMediumF18c7C7C7C,
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValue = value ?? "";
+                                });
+                              },
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(height: 8);
+                          },
+                        ),
+                        10.0.height(),
                         PriceCalculation(
                           totalPrice: context
                               .read<CartItemCubit>()
@@ -87,9 +134,8 @@ class CartUi extends StatelessWidget {
                           discountPrice: context
                               .read<CartItemCubit>()
                               .calculateDiscountedPrice(),
-                          netPrice: context
-                              .read<CartItemCubit>()
-                              .calculateNetPrice(),
+                          netPrice:
+                              context.read<CartItemCubit>().calculateNetPrice(),
                         ),
                         10.0.height(),
                         PrimaryButton(
@@ -115,8 +161,7 @@ class CartUi extends StatelessWidget {
                                       ),
                                       paymentData: PaymentData(
                                         paymentMethod: "cod",
-                                        paymentMethodTitle:
-                                            "Cash on delivery",
+                                        paymentMethodTitle: "Cash on delivery",
                                       ),
                                       cuponData: CuponData(
                                         cuponCode: "",
@@ -130,7 +175,11 @@ class CartUi extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          AddressUi(orderInput: orderInput),
+                                          AddressUi(
+                                        orderInput: orderInput,
+                                        isOnlinePayment:
+                                            selectedValue == paymentMethod[0],
+                                      ),
                                     ),
                                   );
                                 },
@@ -139,8 +188,7 @@ class CartUi extends StatelessWidget {
                         10.0.height(),
                         SecondaryButton(
                           onTap: () {
-                            context
-                                .pushReplacementNamed(RouterUtil.dashboard);
+                            context.pushReplacementNamed(RouterUtil.dashboard);
                           },
                           btnName: "Continue Shopping",
                         ),
@@ -204,5 +252,35 @@ class CartUi extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  generateHash(Map response) {
+    // TODO: implement generateHash
+    throw UnimplementedError();
+  }
+
+  @override
+  onError(Map? response) {
+    // TODO: implement onError
+    throw UnimplementedError();
+  }
+
+  @override
+  onPaymentCancel(Map? response) {
+    // TODO: implement onPaymentCancel
+    throw UnimplementedError();
+  }
+
+  @override
+  onPaymentFailure(response) {
+    // TODO: implement onPaymentFailure
+    throw UnimplementedError();
+  }
+
+  @override
+  onPaymentSuccess(response) {
+    // TODO: implement onPaymentSuccess
+    throw UnimplementedError();
   }
 }

@@ -37,9 +37,9 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     Future.microtask(
-          () => context.read<CartItemCubit>().getQuantity(
-        productId: widget.productId ?? 0,
-      ),
+      () => context.read<CartItemCubit>().getQuantity(
+            productId: widget.productId ?? 0,
+          ),
     );
     return BlocProvider(
       create: (context) => ProductDetailCubit()
@@ -70,9 +70,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   productId:
                                       productDetail.productDetails?.productId ??
                                           0,
-                                  productImage: productDetail.productDetails
-                                          ?.productImageFeaturedImageLink?[0] ??
-                                      "",
+                                  productImage: ((productDetail.productDetails
+                                                  ?.productImageFeaturedImageLink ??
+                                              [])
+                                          .isEmpty)
+                                      ? ""
+                                      : (productDetail.productDetails
+                                                  ?.productImageFeaturedImageLink?[
+                                              0] ??
+                                          ""),
                                   productName: productDetail
                                           .productDetails?.productName ??
                                       "N/A",
@@ -171,46 +177,61 @@ class _ProductDetailsState extends State<ProductDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 250.0,
-                enableInfiniteScroll: false,
-                viewportFraction: 1,
-                onPageChanged: (page, _) {
-                  setState(() {
-                    selectedIndex = page;
-                  });
-                },
-              ),
-              items: (productDetail?.productDetails?.featureImagesList ?? [])
-                  .map((image) {
-                debugPrint("The featureList is ${image}");
-
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Image.network(
-                      image ?? "",
-                      fit: BoxFit.cover,
-                    );
+            if ((productDetail?.productDetails?.featureImagesList ?? [])
+                .isEmpty) ...[
+              Center(
+                child: Image.asset(
+                  catImg,
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.fitWidth,
+                ),
+              )
+            ],
+            if ((productDetail?.productDetails?.featureImagesList ?? [])
+                .isNotEmpty) ...[
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 250.0,
+                  enableInfiniteScroll: false,
+                  viewportFraction: 1,
+                  onPageChanged: (page, _) {
+                    setState(() {
+                      selectedIndex = page;
+                    });
                   },
-                );
-              }).toList(),
-            ),
+                ),
+                items: (productDetail?.productDetails?.featureImagesList ?? [])
+                    .map((image) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Image.network(
+                        image ?? "",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
             20.0.height(),
-            Center(
-              child: DotsIndicator(
-                dotsCount:
-                    (productDetail?.productDetails?.featureImagesList ?? [])
-                        .length,
-                position: selectedIndex,
-                decorator: DotsDecorator(
-                  size: const Size.square(9.0),
-                  activeSize: const Size(28.0, 9.0),
-                  activeShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0)),
+            if ((productDetail?.productDetails?.featureImagesList ?? [])
+                .isNotEmpty) ...[
+              Center(
+                child: DotsIndicator(
+                  dotsCount:
+                      (productDetail?.productDetails?.featureImagesList ?? [])
+                          .length,
+                  position: selectedIndex,
+                  decorator: DotsDecorator(
+                    size: const Size.square(9.0),
+                    activeSize: const Size(28.0, 9.0),
+                    activeShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0)),
+                  ),
                 ),
               ),
-            ),
+            ],
             30.0.height(),
             Text(
               productDetail?.productDetails?.productName ?? "",
@@ -232,13 +253,17 @@ class _ProductDetailsState extends State<ProductDetails> {
               ],
             ),
             25.0.height(),
-            Text(
-              "Description",
-              style: txtMediumF18c38383,
-            ),
-            10.0.height(),
-            Html(
-                data: productDetail?.productDetails?.productDescription ?? " "),
+            if ((productDetail?.productDetails?.productDescription ?? "")
+                .isNotEmpty) ...[
+              Text(
+                "Description",
+                style: txtMediumF18c38383,
+              ),
+              10.0.height(),
+              Html(
+                data: productDetail?.productDetails?.productDescription ?? "",
+              ),
+            ],
           ],
         ),
       ),

@@ -86,7 +86,7 @@ class HomeDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => const BillingAddress(),
+                        builder: (BuildContext context) => const BillingAddress(isFromCart: false,),
                       ),
                     );
                   },

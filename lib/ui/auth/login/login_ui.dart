@@ -52,7 +52,7 @@ class _LoginUiState extends State<LoginUi> {
           PreferenceUtils.setString(PreferenceUtils.USERNAME, loginResponse?.loginUser?.displayName ?? "");
           PreferenceUtils.setString(PreferenceUtils.USER_RESPONSE, loginResponse?.loginUser?.toString() ?? "");
           PreferenceUtils.setString(PreferenceUtils.USER_EMAIL, loginResponse?.loginUser?.userEmail ?? "");
-          context.pushReplacementNamed(RouterUtil.homeUi);
+          context.pushReplacementNamed(RouterUtil.dashboard);
         }
         if (state.formLoadingState == FormLoadingState.failure) {
           var snackBar = SnackBar(
