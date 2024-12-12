@@ -5,7 +5,6 @@ import 'package:agriapp/domain/models/order/order_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 
 import '../../../data/helper/barrel.dart';
 import '../../../data/router/rounter_config.dart';
@@ -21,10 +20,9 @@ class CartUi extends StatefulWidget {
   State<CartUi> createState() => _CartUiState();
 }
 
-class _CartUiState extends State<CartUi> implements PayUCheckoutProProtocol {
+class _CartUiState extends State<CartUi>  {
   bool orderVisible = true;
 
-  late PayUCheckoutProFlutter _checkoutPro;
 
   List<String> paymentMethod = ["Online", "Cash On Delivery"];
 
@@ -33,7 +31,6 @@ class _CartUiState extends State<CartUi> implements PayUCheckoutProProtocol {
   @override
   void initState() {
     selectedValue = paymentMethod[0];
-    _checkoutPro = PayUCheckoutProFlutter(this);
   }
 
   @override
@@ -177,6 +174,7 @@ class _CartUiState extends State<CartUi> implements PayUCheckoutProProtocol {
                                       builder: (BuildContext context) =>
                                           AddressUi(
                                         orderInput: orderInput,
+                                        price: context.read<CartItemCubit>().calculateNetPrice(),
                                         isOnlinePayment:
                                             selectedValue == paymentMethod[0],
                                       ),

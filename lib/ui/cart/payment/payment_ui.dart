@@ -174,29 +174,5 @@ class _PaymentUiState extends State<PaymentUi>{
     );
   }
 
-  @override
-  generateHash(Map response) {
-    Map hashResponse = HashService.generateHash(response);
-    _checkoutPro.hashGenerated(hash: hashResponse);
-  }
-
-  @override
-  onError(Map? response) {
-    log(response.toString());
-  }
-
-  @override
-  onPaymentCancel(Map? response) {
-    log(response.toString());
-  }
-
-  @override
-  onPaymentFailure(response) {
-    log(response.toString());
-  }
-
-  @override
-  onPaymentSuccess(response) {
-    log(response.toString());
-  }
 }
+

@@ -11,6 +11,7 @@ import 'domain/blocs/address_cubit/address_cubit.dart';
 import 'domain/blocs/cart_cubit/cart_cubit.dart';
 import 'domain/blocs/category_cubit/category_cubit.dart';
 import 'domain/blocs/featured_product_cubit/featured_product_cubit.dart';
+import 'domain/blocs/order_cubit/create_order_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,6 +78,9 @@ class _EntryPointState extends State<EntryPoint> {
           ),
           BlocProvider(
             create: (context) => AddressCubit(),
+          ),
+          BlocProvider(
+            create: (BuildContext context) => CreateOrderCubit(),
           ),
         ],
         child: MaterialApp.router(

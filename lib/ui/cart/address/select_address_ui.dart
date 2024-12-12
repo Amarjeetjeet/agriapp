@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:agriapp/data/data_source/local/database_helper/database_helper.dart';
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
@@ -11,7 +9,6 @@ import 'package:payu_checkoutpro_flutter/PayUConstantKeys.dart';
 import 'package:payu_checkoutpro_flutter/payu_checkoutpro_flutter.dart';
 
 import '../../../data/data_source/local/preference_util/preference_utils.dart';
-import '../../../data/helper/hash_service.dart';
 import '../../../data/helper/widgets/utils.dart';
 import '../../../data/router/rounter_config.dart';
 import '../../../domain/blocs/address_cubit/address_cubit.dart';
@@ -21,15 +18,18 @@ import '../../../domain/models/model/shipping_address_response.dart';
 import '../../../domain/models/order/order_input.dart';
 import 'billing_address.dart';
 import 'billing_address_form.dart';
+import 'hash_service.dart';
 
 class AddressUi extends StatefulWidget {
   const AddressUi({
     super.key,
     required this.orderInput,
+    required this.price,
     required this.isOnlinePayment,
   });
 
   final OrderInput orderInput;
+  final double price;
   final bool isOnlinePayment;
 
   @override
@@ -39,9 +39,10 @@ class AddressUi extends StatefulWidget {
 class _AddressUiState extends State<AddressUi>
     implements PayUCheckoutProProtocol {
   String selectedAddress = 'Billing Address';
+  late PayUCheckoutProFlutter _checkoutPro;
 
   bool userDifferentShippingAddress = false;
-
+  late OrderInput orderInput;
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
   late TextEditingController address1Controller;
@@ -51,7 +52,6 @@ class _AddressUiState extends State<AddressUi>
   late TextEditingController postcodeController;
   late TextEditingController phoneController;
   final _formKey = GlobalKey<FormState>();
-  late PayUCheckoutProFlutter _checkoutPro;
 
   @override
   void initState() {
@@ -74,9 +74,6 @@ class _AddressUiState extends State<AddressUi>
         BlocProvider(
           create: (BuildContext context) => AddressCubit()..getBillingAddress(),
         ),
-        BlocProvider(
-          create: (BuildContext context) => CreateOrderCubit(),
-        ),
       ],
       child: Scaffold(
         appBar: const CustomAppBar(
@@ -87,7 +84,7 @@ class _AddressUiState extends State<AddressUi>
           builder: (context, addressState) {
             if (addressState is SuccessState) {
               return BlocConsumer<CreateOrderCubit, FormStateApi>(
-                listener: (context, createOrderState) {
+                listener: (context, createOrderState) async {
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.loading) {
                     Utils(context).startLoading();
@@ -100,15 +97,17 @@ class _AddressUiState extends State<AddressUi>
                   }
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.success) {
-                    var snackBar = SnackBar(
-                      content: Text(
-                          (createOrderState.success as OrderCreateResponse)
-                                  .messege ??
-                              ""),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    context.pushReplacementNamed(RouterUtil.dashboard);
-                    DatabaseHelper.clearCart();
+                    await DatabaseHelper.clearCart();
+                    if (context.mounted) {
+                      var snackBar = SnackBar(
+                        content: Text(
+                            (createOrderState.success as OrderCreateResponse)
+                                    .messege ??
+                                ""),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      context.pushReplacementNamed(RouterUtil.dashboard);
+                    }
                   }
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.failure) {
@@ -127,48 +126,9 @@ class _AddressUiState extends State<AddressUi>
                     ),
                     child: PrimaryButton(
                       onTap: () async {
-                        try{
-                          _checkoutPro.openCheckoutScreen(
-                            payUPaymentParams: PayUParams.createPayUPaymentParams(),
-                            payUCheckoutProConfig: PayUParams.createPayUConfigParams(),
-                          );
-                          return;
-                          _checkoutPro.openCheckoutScreen(payUPaymentParams: {
-                            PayUPaymentParamKey.key: "s1U3rc",
-                            PayUPaymentParamKey.amount: "10",
-                            PayUPaymentParamKey.productInfo: "Payu",
-                            PayUPaymentParamKey.firstName: "Sidhu Patil",
-                            PayUPaymentParamKey.email: "abc@gmail.com",
-                            PayUPaymentParamKey.phone: "9876543210",
-                            PayUPaymentParamKey.android_furl:
-                            "https://www.payu.in/txnstatus",
-                            PayUPaymentParamKey.android_surl:
-                            "https://www.payu.in/txnstatus",
-                            PayUPaymentParamKey.ios_surl:
-                            "https://www.payu.in/txnstatus",
-                            PayUPaymentParamKey.ios_furl:
-                            "https://www.payu.in/txnstatus",
-                          }, payUCheckoutProConfig: {
-                            PayUCheckoutProConfigKeys.merchantName: "PayU",
-                          });
-                          return;
-                        }catch(e){
-                          print("e is this $e");
-                        }
-
-
-                        return;
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute<void>(
-                        //     builder: (BuildContext context) =>
-                        //         const PaymentUi(),
-                        //   ),
-                        // );
-
                         ShippingAddressResponse? shippingAddressResponse =
                             addressState.success;
-                        OrderInput orderInput = OrderInput(
+                        orderInput = OrderInput(
                           createOrder: CreateOrder(
                             productData:
                                 widget.orderInput.createOrder?.productData,
@@ -176,8 +136,11 @@ class _AddressUiState extends State<AddressUi>
                               deviveryCharg: "0",
                             ),
                             paymentData: PaymentData(
-                              paymentMethod: "cod",
-                              paymentMethodTitle: "Cash on delivery",
+                              paymentMethod:
+                                  widget.isOnlinePayment ? "payu" : "cod",
+                              paymentMethodTitle: widget.isOnlinePayment
+                                  ? "Online"
+                                  : "Cash on delivery",
                             ),
                             cuponData: CuponData(
                               cuponCode: "",
@@ -210,9 +173,47 @@ class _AddressUiState extends State<AddressUi>
                             ),
                           ),
                         );
-                        context
-                            .read<CreateOrderCubit>()
-                            .placeOrder(orderInput: orderInput);
+                        if (!widget.isOnlinePayment) {
+                          context
+                              .read<CreateOrderCubit>()
+                              .placeOrder(orderInput: orderInput);
+                          return;
+                        }
+
+                        _checkoutPro.openCheckoutScreen(
+                          payUPaymentParams: {
+                            PayUPaymentParamKey.key: "s1U3rc",
+                            PayUPaymentParamKey.amount: widget.price,
+                            PayUPaymentParamKey.productInfo: "AgriPari",
+                            PayUPaymentParamKey.firstName:
+                                "${shippingAddressResponse?.userBillingAddress?.billingFirstName} ${shippingAddressResponse?.userBillingAddress?.billingLastName}",
+                            PayUPaymentParamKey.email:
+                                PreferenceUtils.getString(
+                              PreferenceUtils.USER_EMAIL,
+                            ),
+                            PayUPaymentParamKey.phone:
+                                "${shippingAddressResponse?.userBillingAddress?.billingPhone}",
+                            PayUPaymentParamKey.environment: "1",
+                            PayUPaymentParamKey.transactionId:
+                                DateTime.now().toString(),
+                            PayUPaymentParamKey.userCredential:
+                                PreferenceUtils.getString(
+                              PreferenceUtils.USERID,
+                            ),
+                            PayUPaymentParamKey.android_surl:
+                                "https://www.payumoney.com/mobileapp/payumoney/success.php",
+                            PayUPaymentParamKey.android_furl:
+                                "https://www.payumoney.com/mobileapp/payumoney/failure.php",
+                            PayUPaymentParamKey.ios_surl:
+                                "https://www.payumoney.com/mobileapp/payumoney/success.php",
+                            PayUPaymentParamKey.ios_furl:
+                                "https://www.payumoney.com/mobileapp/payumoney/failure.php",
+                          },
+                          payUCheckoutProConfig: {
+                            PayUCheckoutProConfigKeys.merchantName: "AgriPari",
+                          },
+                        );
+                        return;
                       },
                       btnName: "Place Order",
                     ),
@@ -234,6 +235,92 @@ class _AddressUiState extends State<AddressUi>
           },
         ),
       ),
+    );
+  }
+
+  @override
+  generateHash(Map response) {
+    // Backend will generate the hash which you need to pass to SDK
+    // hashResponse: is the response which you get from your server
+
+    Map hashResponse = {};
+
+    //Keep the salt and hash calculation logic in the backend for security reasons. Don't use local hash logic.
+    //Uncomment following line to test the test hash.
+    hashResponse = HashService.generateHash(response);
+
+    _checkoutPro.hashGenerated(hash: hashResponse);
+  }
+
+  @override
+  onError(Map? response) {
+    showAlertDialog(context, "onError", response.toString());
+  }
+
+  @override
+  onPaymentSuccess(dynamic response) {
+    // showSuccessAlertDialog(context, response.toString());
+    context.read<CreateOrderCubit>().placeOrder(orderInput: orderInput);
+  }
+
+  @override
+  onPaymentFailure(dynamic response) {
+    showAlertDialog(context, "onPaymentFailure", response.toString());
+  }
+
+  @override
+  onPaymentCancel(Map? response) {
+    showAlertDialog(context, "onPaymentCancel", response.toString());
+  }
+
+  void showSuccessAlertDialog(
+    BuildContext context,
+    String content,
+  ) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Payment success Placing order..."),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Text(content),
+          ),
+          actions: [okButton],
+        );
+      },
+    );
+  }
+
+  void showAlertDialog(
+    BuildContext context,
+    String title,
+    String content,
+  ) {
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Text(content),
+          ),
+          actions: [okButton],
+        );
+      },
     );
   }
 
@@ -267,7 +354,9 @@ class _AddressUiState extends State<AddressUi>
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => const BillingAddress(isFromCart: true,),
+                    builder: (BuildContext context) => const BillingAddress(
+                      isFromCart: true,
+                    ),
                   ),
                 );
               },
@@ -368,195 +457,5 @@ class _AddressUiState extends State<AddressUi>
         ),
       ),
     );
-  }
-
-
-  showAlertDialog(BuildContext context, String title, String content) {
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: new Text(content),
-            ),
-            actions: [okButton],
-          );
-        });
-  }
-
-  @override
-  generateHash(Map response) {
-    print("generate map");
-    Map hashResponse = {};
-    hashResponse = HashService.generateHash(response);
-    print("generate map map $hashResponse");
-    print("generate map response $response");
-    _checkoutPro.hashGenerated(hash: hashResponse);
-
-    print(response);
-  }
-
-  @override
-  onError(Map? response) {
-    showAlertDialog(context, "onError", response.toString());
-    print("onError map");
-    print(response);
-  }
-
-  @override
-  onPaymentCancel(Map? response) {
-    showAlertDialog(context, "onPaymentCancel", response.toString());
-    print("onPaymentCancel map");
-    print(response);
-  }
-
-  @override
-  onPaymentFailure(response) {
-    showAlertDialog(context, "onPaymentFailure", response.toString());
-    print("onPaymentFailure map");
-    print(response);
-  }
-
-  @override
-  onPaymentSuccess(response) {
-    showAlertDialog(context, "onPaymentSuccess", response.toString());
-    print("onPaymentSuccess map");
-    print(response);
-  }
-}
-
-class PayUTestCredentials {
-  //Find the test credentials from dev guide: https://devguide.payu.in/flutter-sdk-integration/getting-started-flutter-sdk/mobile-sdk-test-environment/
-  static const merchantKey = "s1U3rc";// Add you Merchant Key
-  static const iosSurl = "https://www.payu.in/txnstatus";
-  static const iosFurl = "https://www.payu.in/txnstatus";
-  static const androidSurl = "https://www.payu.in/txnstatus";
-  static const androidFurl = "https://www.payu.in/txnstatus";
-
-  static const merchantAccessKey = "";//Add Merchant Access Key - Optional
-  static const sodexoSourceId = ""; //Add sodexo Source Id - Optional
-}
-
-//Pass these values from your app to SDK, this data is only for test purpose
-class PayUParams {
-  static Map createPayUPaymentParams() {
-    var siParams = {
-      PayUSIParamsKeys.isFreeTrial: true,
-      PayUSIParamsKeys.billingAmount: '1',              //Required
-      PayUSIParamsKeys.billingInterval: 1,              //Required
-      PayUSIParamsKeys.paymentStartDate: '2023-04-20',  //Required
-      PayUSIParamsKeys.paymentEndDate: '2023-04-30',    //Required
-      PayUSIParamsKeys.billingCycle:                    //Required
-      'daily', //Can be any of 'daily','weekly','yearly','adhoc','once','monthly'
-      PayUSIParamsKeys.remarks: 'Test SI transaction',
-      PayUSIParamsKeys.billingCurrency: 'INR',
-      PayUSIParamsKeys.billingLimit: 'ON', //ON, BEFORE, AFTER
-      PayUSIParamsKeys.billingRule: 'MAX', //MAX, EXACT
-    };
-
-    var additionalParam = {
-      PayUAdditionalParamKeys.udf1: "udf1",
-      PayUAdditionalParamKeys.udf2: "udf2",
-      PayUAdditionalParamKeys.udf3: "udf3",
-      PayUAdditionalParamKeys.udf4: "udf4",
-      PayUAdditionalParamKeys.udf5: "udf5",
-      PayUAdditionalParamKeys.merchantAccessKey:
-      PayUTestCredentials.merchantAccessKey,
-      PayUAdditionalParamKeys.sourceId:PayUTestCredentials.sodexoSourceId,
-    };
-
-
-    var spitPaymentDetails =
-    {
-      "type": "absolute",
-      "splitInfo": {
-        PayUTestCredentials.merchantKey: {
-          "aggregatorSubTxnId": "1234567540099887766650091", //unique for each transaction
-          "aggregatorSubAmt": "1"
-        }
-      }
-    };
-
-
-    var payUPaymentParams = {
-      PayUPaymentParamKey.key: PayUTestCredentials.merchantKey,
-      PayUPaymentParamKey.amount: "1000",
-      PayUPaymentParamKey.productInfo: "Info",
-      PayUPaymentParamKey.firstName: "Abc",
-      PayUPaymentParamKey.email: "test@gmail.com",
-      PayUPaymentParamKey.phone: "9999999999",
-      PayUPaymentParamKey.ios_surl: PayUTestCredentials.iosSurl,
-      PayUPaymentParamKey.ios_furl: PayUTestCredentials.iosFurl,
-      PayUPaymentParamKey.android_surl: PayUTestCredentials.androidSurl,
-      PayUPaymentParamKey.android_furl: PayUTestCredentials.androidFurl,
-      PayUPaymentParamKey.environment: "1", //0 => Production 1 => Test
-      PayUPaymentParamKey.userCredential: null, //Pass user credential to fetch saved cards => A:B - Optional
-      PayUPaymentParamKey.transactionId: DateTime.now().millisecondsSinceEpoch.toString(),
-      PayUPaymentParamKey.additionalParam: additionalParam,
-      PayUPaymentParamKey.enableNativeOTP: true,
-      PayUPaymentParamKey.splitPaymentDetails:json.encode(spitPaymentDetails),
-      PayUPaymentParamKey.userToken:"", //Pass a unique token to fetch offers. - Optional
-    };
-
-    return payUPaymentParams;
-  }
-
-  static Map createPayUConfigParams() {
-    var paymentModesOrder = [
-      {"Wallets": "PHONEPE"},
-      {"UPI": "TEZ"},
-      {"Wallets": ""},
-      {"EMI": ""},
-      {"NetBanking": ""},
-    ];
-
-    var cartDetails = [
-      {"GST": "5%"},
-      {"Delivery Date": "25 Dec"},
-      {"Status": "In Progress"}
-    ];
-    var enforcePaymentList = [
-      {"payment_type": "CARD", "enforce_ibiboCode": "UTIBENCC"},
-    ];
-
-    var customNotes = [
-      {
-        "custom_note": "Its Common custom note for testing purpose",
-        "custom_note_category": [PayUPaymentTypeKeys.emi,PayUPaymentTypeKeys.card]
-      },
-      {
-        "custom_note": "Payment options custom note",
-        "custom_note_category": null
-      }
-    ];
-
-    var payUCheckoutProConfig = {
-      PayUCheckoutProConfigKeys.primaryColor: "#4994EC",
-      PayUCheckoutProConfigKeys.secondaryColor: "#FFFFFF",
-      PayUCheckoutProConfigKeys.merchantName: "PayU",
-      PayUCheckoutProConfigKeys.merchantLogo: "logo",
-      PayUCheckoutProConfigKeys.showExitConfirmationOnCheckoutScreen: true,
-      PayUCheckoutProConfigKeys.showExitConfirmationOnPaymentScreen: true,
-      PayUCheckoutProConfigKeys.cartDetails: cartDetails,
-      PayUCheckoutProConfigKeys.paymentModesOrder: paymentModesOrder,
-      PayUCheckoutProConfigKeys.merchantResponseTimeout: 30000,
-      PayUCheckoutProConfigKeys.customNotes: customNotes,
-      PayUCheckoutProConfigKeys.autoSelectOtp: true,
-      // PayUCheckoutProConfigKeys.enforcePaymentList: enforcePaymentList,
-      PayUCheckoutProConfigKeys.waitingTime: 30000,
-      PayUCheckoutProConfigKeys.autoApprove: true,
-      PayUCheckoutProConfigKeys.merchantSMSPermission: true,
-      PayUCheckoutProConfigKeys.showCbToolbar: true,
-    };
-    return payUCheckoutProConfig;
   }
 }

@@ -50,9 +50,9 @@ dependencies:
   sqflite: ^2.3.2
   path_provider: ^2.1.2
   flutter_html: ^3.0.0-alpha.6
-  payu_checkoutpro_flutter: ^1.2.2
   crypto: ^3.0.6
-
+  payu_checkoutpro_flutter:
+    path: ./payu_checkoutpro_flutter-1.2.3
 
 dev_dependencies:
   flutter_test:

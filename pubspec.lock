@@ -387,11 +387,10 @@ packages:
   payu_checkoutpro_flutter:
     dependency: "direct main"
     description:
-      name: payu_checkoutpro_flutter
-      sha256: "78eb0134fa85c764d3cf2b9e7050f072278fa23a283fd8dc2660882cf3a8cf4f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.2"
+      path: "payu_checkoutpro_flutter-1.2.3"
+      relative: true
+    source: path
+    version: "1.2.3"
   petitparser:
     dependency: transitive
     description:
