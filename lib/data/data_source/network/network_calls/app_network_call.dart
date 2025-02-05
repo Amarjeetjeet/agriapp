@@ -32,6 +32,28 @@ class AppNetworkCall {
     return UserDetailResponse.fromJson(res);
   }
 
+  static Future<UserDetailResponse> getCartDetails() async {
+    final res = await baseClient.post(
+      "cart_product_list.php",
+      {
+        "user_id": PreferenceUtils.getString(PreferenceUtils.USERID),
+      },
+    );
+
+    return UserDetailResponse.fromJson(res);
+  }
+
+  static Future<UserDetailResponse> getShippingCharges() async {
+    final res = await baseClient.post(
+      "calculate_shipping_charges.php",
+      {
+        "user_id": PreferenceUtils.getString(PreferenceUtils.USERID),
+      },
+    );
+
+    return UserDetailResponse.fromJson(res);
+  }
+
   static Future<Map<String, dynamic>> addAddress({
     required AddressInput addressInput,
   }) async {
@@ -62,6 +84,22 @@ class AppNetworkCall {
   static Future<Map<String, dynamic>> aboutUs() async {
     var res = await baseClient.get(
       api: "about_us.php",
+    );
+    return res;
+  }
+
+  static Future<Map<String, dynamic?>?> addToCart({
+    required int productId,
+  }) async {
+    var res = await baseClient.post(
+      "add_to_cart.php",
+      {
+        "add_to_cart": {
+          "user_id": PreferenceUtils.getString(PreferenceUtils.USERID),
+          "product_id": productId,
+          "quantity": 1,
+        }
+      },
     );
     return res;
   }

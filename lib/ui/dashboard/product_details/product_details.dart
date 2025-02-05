@@ -1,5 +1,5 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
-import 'package:agriapp/domain/blocs/cart_cubit/cart_state.dart';
+import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
 import 'package:agriapp/ui/dashboard/product_details/product_detail_cubit.dart';
@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../../../data/helper/barrel.dart';
+import '../../../data/helper/widgets/utils.dart';
 import '../../cart/ui/cart_ui.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -57,92 +58,126 @@ class _ProductDetailsState extends State<ProductDetails> {
             builder: (context, productState) {
               if (productState is SuccessState) {
                 ProductDetail productDetail = productState.success;
-                return BlocBuilder<CartItemCubit, CartState>(
-                  builder: (context, counterState) {
-                    return Row(
-                      children: [
-                        10.0.width(),
-                        if (counterState.counter <= 0) ...[
-                          Flexible(
-                            child: SecondaryButton(
-                              onTap: () {
-                                BlocProvider.of<CartItemCubit>(context).addItem(
-                                  productId:
-                                      productDetail.productDetails?.productId ??
-                                          0,
-                                  productImage: ((productDetail.productDetails
-                                                  ?.productImageFeaturedImageLink ??
-                                              [])
-                                          .isEmpty)
-                                      ? ""
-                                      : (productDetail.productDetails
-                                                  ?.productImageFeaturedImageLink?[
-                                              0] ??
-                                          ""),
-                                  productName: productDetail
-                                          .productDetails?.productName ??
-                                      "N/A",
-                                  discountedPrice: productDetail
-                                          .productDetails?.productPrice ??
-                                      "0",
-                                  regularPrice: productDetail.productDetails
-                                          ?.productRegularPrice ??
-                                      "0",
-                                );
-                              },
-                              btnName: "Add To Cart",
-                            ),
-                          ),
-                        ],
-                        if (counterState.counter > 0) ...[
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                RoundedIconBtn(
-                                    iconData: Icons.remove,
-                                    onTap: () {
-                                      BlocProvider.of<CartItemCubit>(context)
-                                          .decrementQuantity(
-                                        widget.productId ?? 0,
-                                      );
-                                    }),
-                                Text(
-                                  counterState.counter.toString(),
-                                  style: txtSemiBoldF24c383838,
-                                ),
-                                RoundedIconBtn(
-                                  iconData: Icons.add,
-                                  onTap: () {
-                                    BlocProvider.of<CartItemCubit>(context)
-                                        .incrementQuantity(
-                                      widget.productId ?? 0,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        10.0.width(),
-                        Flexible(
-                          child: PrimaryButton(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CartUi(),
-                                ),
-                              );
-                            },
-                            btnName: "Go To Cart",
-                          ),
+                return Row(
+                  children: [
+                    10.0.width(),
+                    BlocListener<CartItemCubit, FormStateApi>(
+                      listener: (context, state) {
+                        if (state.formLoadingState ==
+                            FormLoadingState.loading) {
+                          Utils(context).startLoading();
+                        }
+                        if (state.formLoadingState != FormLoadingState.idle &&
+                            state.formLoadingState !=
+                                FormLoadingState.loading) {
+                          Utils(context).stopLoading();
+                        }
+                        if (state.formLoadingState ==
+                            FormLoadingState.success) {
+                          var snackBar = SnackBar(
+                            content: Text(state.errorMessage ?? ""),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                        if (state.formLoadingState ==
+                            FormLoadingState.failure) {
+                          var snackBar = SnackBar(
+                            content: Text(
+                                state.errorMessage ?? "Something went wrong!!"),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
+                      child: Flexible(
+                        child: SecondaryButton(
+                          onTap: () {
+                            BlocProvider.of<CartItemCubit>(context).addItem(
+                              productId:
+                                  productDetail.productDetails?.productId ?? 0,
+                            );
+                          },
+                          btnName: "Add To Cart",
                         ),
-                        10.0.width(),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                    // if (counterState.counter <= 0) ...[
+                    //   Flexible(
+                    //     child: SecondaryButton(
+                    //       onTap: () {
+                    //         BlocProvider.of<CartItemCubit>(context).addItem(
+                    //           productId:
+                    //               productDetail.productDetails?.productId ??
+                    //                   0,
+                    //           productImage: ((productDetail.productDetails
+                    //                           ?.productImageFeaturedImageLink ??
+                    //                       [])
+                    //                   .isEmpty)
+                    //               ? ""
+                    //               : (productDetail.productDetails
+                    //                           ?.productImageFeaturedImageLink?[
+                    //                       0] ??
+                    //                   ""),
+                    //           productName: productDetail
+                    //                   .productDetails?.productName ??
+                    //               "N/A",
+                    //           discountedPrice: productDetail
+                    //                   .productDetails?.productPrice ??
+                    //               "0",
+                    //           regularPrice: productDetail.productDetails
+                    //                   ?.productRegularPrice ??
+                    //               "0",
+                    //         );
+                    //       },
+                    //       btnName: "Add To Cart",
+                    //     ),
+                    //   ),
+                    // ],
+                    // if (counterState.counter > 0) ...[
+                    //   Flexible(
+                    //     child: Row(
+                    //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //       children: [
+                    //         RoundedIconBtn(
+                    //             iconData: Icons.remove,
+                    //             onTap: () {
+                    //               BlocProvider.of<CartItemCubit>(context)
+                    //                   .decrementQuantity(
+                    //                 widget.productId ?? 0,
+                    //               );
+                    //             }),
+                    //         Text(
+                    //           counterState.counter.toString(),
+                    //           style: txtSemiBoldF24c383838,
+                    //         ),
+                    //         RoundedIconBtn(
+                    //           iconData: Icons.add,
+                    //           onTap: () {
+                    //             BlocProvider.of<CartItemCubit>(context)
+                    //                 .incrementQuantity(
+                    //               widget.productId ?? 0,
+                    //             );
+                    //           },
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ],
+                    10.0.width(),
+                    Flexible(
+                      child: PrimaryButton(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => const CartUi(),
+                            ),
+                          );
+                        },
+                        btnName: "Go To Cart",
+                      ),
+                    ),
+                    10.0.width(),
+                  ],
                 );
               }
               return Container();

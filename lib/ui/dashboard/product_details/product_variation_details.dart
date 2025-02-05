@@ -1,4 +1,5 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
+import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
 import 'package:agriapp/domain/models/product/prodct_by_category_response.dart';
 import 'package:agriapp/domain/models/product/product_detail.dart';
@@ -62,72 +63,91 @@ class _ProductVariationDetailsState extends State<ProductVariationDetails> {
             builder: (context, productState) {
               if (productState is SuccessState) {
                 ProductDetail productDetail = productState.success;
-                return BlocBuilder<CartItemCubit, CartState>(
+                return BlocBuilder<CartItemCubit, FormStateApi>(
                   builder: (context, counterState) {
                     return Row(
                       children: [
                         10.0.width(),
-                        if (counterState.counter <= 0) ...[
-                          Flexible(
-                            child: SecondaryButton(
-                              onTap: () {
-                                if (productPrice == null) {
-                                  var snackBar = const SnackBar(
-                                    content:
-                                        Text("Please select quantity first!"),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                  return;
-                                }
-                                BlocProvider.of<CartItemCubit>(context).addItem(
-                                  productId: productID ?? 0,
-                                  productImage: productDetail.productDetails
-                                          ?.productImageFeaturedImageLink?[0] ??
-                                      "",
-                                  productName: productDetail
-                                          .productDetails?.productName ??
-                                      "N/A",
-                                  discountedPrice: productPrice ?? "0",
-                                  regularPrice: productDetail
-                                          .productDetails?.productPrice ??
-                                      "0",
+                        Flexible(
+                          child: SecondaryButton(
+                            onTap: () {
+                              if (productPrice == null) {
+                                var snackBar = const SnackBar(
+                                  content:
+                                  Text("Please select quantity first!"),
                                 );
-                              },
-                              btnName: "Add To Cart",
-                            ),
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                return;
+                              }
+                              BlocProvider.of<CartItemCubit>(context).addItem(
+                                productId: productID ?? 0,
+                              );
+                            },
+                            btnName: "Add To Cart",
                           ),
-                        ],
-                        if (counterState.counter > 0) ...[
-                          Flexible(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                RoundedIconBtn(
-                                    iconData: Icons.remove,
-                                    onTap: () {
-                                      BlocProvider.of<CartItemCubit>(context)
-                                          .decrementQuantity(
-                                        productID ?? 0,
-                                      );
-                                    }),
-                                Text(
-                                  counterState.counter.toString(),
-                                  style: txtSemiBoldF24c383838,
-                                ),
-                                RoundedIconBtn(
-                                  iconData: Icons.add,
-                                  onTap: () {
-                                    BlocProvider.of<CartItemCubit>(context)
-                                        .incrementQuantity(
-                                      productID ?? 0,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
+                        // if (counterState.counter <= 0) ...[
+                        //   Flexible(
+                        //     child: SecondaryButton(
+                        //       onTap: () {
+                        //         if (productPrice == null) {
+                        //           var snackBar = const SnackBar(
+                        //             content:
+                        //                 Text("Please select quantity first!"),
+                        //           );
+                        //           ScaffoldMessenger.of(context)
+                        //               .showSnackBar(snackBar);
+                        //           return;
+                        //         }
+                        //         BlocProvider.of<CartItemCubit>(context).addItem(
+                        //           productId: productID ?? 0,
+                        //           productImage: productDetail.productDetails
+                        //                   ?.productImageFeaturedImageLink?[0] ??
+                        //               "",
+                        //           productName: productDetail
+                        //                   .productDetails?.productName ??
+                        //               "N/A",
+                        //           discountedPrice: productPrice ?? "0",
+                        //           regularPrice: productDetail
+                        //                   .productDetails?.productPrice ??
+                        //               "0",
+                        //         );
+                        //       },
+                        //       btnName: "Add To Cart",
+                        //     ),
+                        //   ),
+                        // ],
+                        // if (counterState.counter > 0) ...[
+                        //   Flexible(
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //       children: [
+                        //         RoundedIconBtn(
+                        //             iconData: Icons.remove,
+                        //             onTap: () {
+                        //               BlocProvider.of<CartItemCubit>(context)
+                        //                   .decrementQuantity(
+                        //                 productID ?? 0,
+                        //               );
+                        //             }),
+                        //         Text(
+                        //           counterState.counter.toString(),
+                        //           style: txtSemiBoldF24c383838,
+                        //         ),
+                        //         RoundedIconBtn(
+                        //           iconData: Icons.add,
+                        //           onTap: () {
+                        //             BlocProvider.of<CartItemCubit>(context)
+                        //                 .incrementQuantity(
+                        //               productID ?? 0,
+                        //             );
+                        //           },
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ],
                         10.0.width(),
                         Flexible(
                           child: PrimaryButton(

@@ -3,8 +3,6 @@ import 'package:agriapp/data/router/rounter_config.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data_source/local/database_helper/database_helper.dart';
-
 class Utils {
   late BuildContext context;
 
@@ -62,7 +60,6 @@ class Utils {
             ),
             TextButton(
               onPressed: () async {
-                await DatabaseHelper.clearCart();
                 await PreferenceUtils.reset();
                 if (context.mounted) {
                   context.go(RouterUtil.loginUi);

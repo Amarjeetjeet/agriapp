@@ -1,4 +1,7 @@
 import 'package:agriapp/domain/blocs/cart_cubit/cart_cubit.dart';
+import 'package:agriapp/domain/blocs/cart_cubit/cart_detail_cubit.dart';
+import 'package:agriapp/domain/blocs/state_api/form_state.dart';
+import 'package:agriapp/domain/blocs/state_api/state_api.dart';
 import 'package:agriapp/domain/models/cart/cart_item.dart';
 import 'package:agriapp/domain/models/model/shipping_address_response.dart';
 import 'package:agriapp/domain/models/order/order_input.dart';
@@ -8,7 +11,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../data/helper/barrel.dart';
 import '../../../data/router/rounter_config.dart';
-import '../../../domain/blocs/cart_cubit/cart_state.dart';
 import '../address/select_address_ui.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/price_calculation.dart';
@@ -20,9 +22,8 @@ class CartUi extends StatefulWidget {
   State<CartUi> createState() => _CartUiState();
 }
 
-class _CartUiState extends State<CartUi>  {
+class _CartUiState extends State<CartUi> {
   bool orderVisible = true;
-
 
   List<String> paymentMethod = ["Online", "Cash On Delivery"];
 
@@ -35,168 +36,178 @@ class _CartUiState extends State<CartUi>  {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartItemCubit, CartState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: cScaffoldBg,
-          appBar: const CustomAppBar(
-            title: 'Cart',
-            hideCartIcon: false,
-          ),
-          body: state.cartItems.isEmpty
-              ? const DisplayError(
-                  errorMessage: "No Item in cart!",
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: Column(
-                      children: [
-                        10.0.height(),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: state.cartItems.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            CartItems item = state.cartItems[index];
-                            return buildCard(item: item, context: context);
-                          },
-                        ),
-                        10.0.height(),
-                        TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: InputBorder.none,
-                            enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(32.0),
-                              ),
-                            ),
-                            hintText: 'Promo code',
-                            hintStyle: txtMediumF14c7C7C7C,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 16.0,
-                            ),
-                            suffixIcon: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Apply",
-                                style: txtSemiBoldF14Primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        10.0.height(),
-                        ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: paymentMethod.length,
-                          itemBuilder: (context, index) {
-                            return RadioListTile(
-                              tileColor: Colors.white,
-                              selectedTileColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              value: paymentMethod[index],
-                              selected: selectedValue == paymentMethod[index],
-                              groupValue: selectedValue,
-                              title: Text(
-                                paymentMethod[index],
-                                style: txtMediumF18c7C7C7C,
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedValue = value ?? "";
-                                });
-                              },
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(height: 8);
-                          },
-                        ),
-                        10.0.height(),
-                        PriceCalculation(
-                          totalPrice: context
-                              .read<CartItemCubit>()
-                              .calculateTotalPrice(),
-                          shippingCharges: 0.00,
-                          discountPrice: context
-                              .read<CartItemCubit>()
-                              .calculateDiscountedPrice(),
-                          netPrice:
-                              context.read<CartItemCubit>().calculateNetPrice(),
-                        ),
-                        10.0.height(),
-                        PrimaryButton(
-                          onTap: state.cartItems.isEmpty
-                              ? null
-                              : () {
-                                  List<ProductData> productData = [];
-
-                                  for (var item in state.cartItems) {
-                                    productData.add(
-                                      ProductData(
-                                        productId: item.productId.toString(),
-                                        qty: item.quantity.toString(),
-                                      ),
-                                    );
-                                  }
-
-                                  OrderInput orderInput = OrderInput(
-                                    createOrder: CreateOrder(
-                                      productData: productData,
-                                      shippingData: ShippingData(
-                                        deviveryCharg: "0",
-                                      ),
-                                      paymentData: PaymentData(
-                                        paymentMethod: "cod",
-                                        paymentMethodTitle: "Cash on delivery",
-                                      ),
-                                      cuponData: CuponData(
-                                        cuponCode: "",
-                                        cuponType: "",
-                                      ),
-                                    ),
-                                  );
-                                  debugPrint("Item is $productData");
-                                  // debugPrint("Item is $orderInput");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          AddressUi(
-                                        orderInput: orderInput,
-                                        price: context.read<CartItemCubit>().calculateNetPrice(),
-                                        isOnlinePayment:
-                                            selectedValue == paymentMethod[0],
-                                      ),
-                                    ),
-                                  );
-                                },
-                          btnName: "Place Order",
-                        ),
-                        10.0.height(),
-                        SecondaryButton(
-                          onTap: () {
-                            context.pushReplacementNamed(RouterUtil.dashboard);
-                          },
-                          btnName: "Continue Shopping",
-                        ),
-                      ],
-                    ),
+    return BlocBuilder<CartItemCubit, FormStateApi>(
+      builder: (context, cartItemState) {
+        return BlocProvider(
+          create: (context) => CartDetailCubit()..getCartDetails(),
+          child: BlocBuilder<CartDetailCubit, StateApi>(
+            builder: (context, state) {
+              return Scaffold(
+                  backgroundColor: cScaffoldBg,
+                  appBar: const CustomAppBar(
+                    title: 'Cart',
+                    hideCartIcon: false,
                   ),
-                ),
+                  body: switch (state) {
+                    LoadingState() => const Loader(),
+                    SuccessState() => success(),
+                    FailureState() =>
+                        DisplayError(errorMessage: state.errorMessage),
+                    EmptyState() =>
+                    const DisplayError(errorMessage: "The Cart is Empty!!"),
+                  });
+            },
+          ),
         );
       },
     );
+  }
+
+  Widget success() {
+    return Text("data");
+//     return SingleChildScrollView(
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(
+//           horizontal: 16.0,
+//           vertical: 8.0,
+//         ),
+//         child: Column(
+//           children: [
+//             10.0.height(),
+//             ListView.builder(
+//               shrinkWrap: true,
+//               itemCount: state.cartItems.length,
+//               physics: const NeverScrollableScrollPhysics(),
+//               itemBuilder: (context, index) {
+//                 CartItems item = state.cartItems[index];
+//                 return buildCard(item: item, context: context);
+//               },
+//             ),
+//             10.0.height(),
+//             TextField(
+//               decoration: InputDecoration(
+//                 filled: true,
+//                 fillColor: Colors.white,
+//                 border: InputBorder.none,
+//                 enabledBorder: const OutlineInputBorder(
+//                   borderSide: BorderSide(
+//                     color: Colors.white,
+//                   ),
+//                   borderRadius: BorderRadius.all(
+//                     Radius.circular(32.0),
+//                   ),
+//                 ),
+//                 hintText: 'Promo code',
+//                 hintStyle: txtMediumF14c7C7C7C,
+//                 contentPadding: const EdgeInsets.symmetric(
+//                   horizontal: 16.0,
+//                   vertical: 16.0,
+//                 ),
+//                 suffixIcon: TextButton(
+//                   onPressed: () {},
+//                   child: Text(
+//                     "Apply",
+//                     style: txtSemiBoldF14Primary,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             10.0.height(),
+//             ListView.separated(
+//               shrinkWrap: true,
+//               itemCount: paymentMethod.length,
+//               itemBuilder: (context, index) {
+//                 return RadioListTile(
+//                   tileColor: Colors.white,
+//                   selectedTileColor: Colors.white,
+//                   shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(12)),
+//                   value: paymentMethod[index],
+//                   selected: selectedValue == paymentMethod[index],
+//                   groupValue: selectedValue,
+//                   title: Text(
+//                     paymentMethod[index],
+//                     style: txtMediumF18c7C7C7C,
+//                   ),
+//                   onChanged: (value) {
+//                     setState(() {
+//                       selectedValue = value ?? "";
+//                     });
+//                   },
+//                 );
+//               },
+//               separatorBuilder: (BuildContext context, int index) {
+//                 return const SizedBox(height: 8);
+//               },
+//             ),
+//             10.0.height(),
+//             PriceCalculation(
+//               totalPrice: context.read<CartItemCubit>().calculateTotalPrice(),
+//               shippingCharges: 0.00,
+//               discountPrice:
+//                   context.read<CartItemCubit>().calculateDiscountedPrice(),
+//               netPrice: context.read<CartItemCubit>().calculateNetPrice(),
+//             ),
+//             10.0.height(),
+//             PrimaryButton(
+//               onTap: state.cartItems.isEmpty
+//                   ? null
+//                   : () {
+//                       List<ProductData> productData = [];
+//
+//                       for (var item in state.cartItems) {
+//                         productData.add(
+//                           ProductData(
+//                             productId: item.productId.toString(),
+//                             qty: item.quantity.toString(),
+//                           ),
+//                         );
+//                       }
+//
+//                       OrderInput orderInput = OrderInput(
+//                         createOrder: CreateOrder(
+//                           productData: productData,
+//                           shippingData: ShippingData(
+//                             deviveryCharg: "0",
+//                           ),
+//                           paymentData: PaymentData(
+//                             paymentMethod: "cod",
+//                             paymentMethodTitle: "Cash on delivery",
+//                           ),
+//                           cuponData: CuponData(
+//                             cuponCode: "",
+//                             cuponType: "",
+//                           ),
+//                         ),
+//                       );
+//                       debugPrint("Item is $productData");
+// // debugPrint("Item is $orderInput");
+//                       Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                           builder: (BuildContext context) => AddressUi(
+//                             orderInput: orderInput,
+//                             price: context
+//                                 .read<CartItemCubit>()
+//                                 .calculateNetPrice(),
+//                             isOnlinePayment: selectedValue == paymentMethod[0],
+//                           ),
+//                         ),
+//                       );
+//                     },
+//               btnName: "Place Order",
+//             ),
+//             10.0.height(),
+//             SecondaryButton(
+//               onTap: () {
+//                 context.pushReplacementNamed(RouterUtil.dashboard);
+//               },
+//               btnName: "Continue Shopping",
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
   }
 
   Card buildAddressCard(ShippingAddressResponse? state) {
@@ -224,7 +235,7 @@ class _CartUiState extends State<CartUi>  {
           children: [
             RoundedIconBtn(
               iconData:
-                  item.quantity == 1 ? Icons.delete_outline : Icons.remove,
+              item.quantity == 1 ? Icons.delete_outline : Icons.remove,
               onTap: () {
                 debugPrint("item count is ${item.productId}");
                 context

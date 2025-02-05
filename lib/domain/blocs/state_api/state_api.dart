@@ -5,9 +5,7 @@ sealed class StateApi extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadingState extends StateApi {
-
-}
+class LoadingState extends StateApi {}
 
 class SuccessState<T> extends StateApi {
   final T? success;

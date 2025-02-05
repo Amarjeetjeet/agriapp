@@ -1,81 +1,69 @@
-import 'package:flutter/cupertino.dart';
+import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/data_source/local/database_helper/database_helper.dart';
-import '../../models/cart/cart_item.dart';
-import 'cart_state.dart';
+import '../../../data/data_source/network/network_calls/app_network_call.dart';
 
-class CartItemCubit extends Cubit<CartState> {
-  final DatabaseHelper databaseHelper;
+class CartItemCubit extends Cubit<FormStateApi> {
+  CartItemCubit() : super(const FormStateApi());
 
-  CartItemCubit({required this.databaseHelper}) : super(const CartState());
+  Future<void> getCartItems() async {}
 
-  Future<void> getCartItems() async {
-    final items = await databaseHelper.getCartItems();
-    List<CartItems> cList =
-        items.map((json) => CartItems.fromJson(json)).toList();
-
-    debugPrint("Items count $items");
-
-    calculateNetPrice();
-    emit(state.copyWith(cartItems: cList));
-  }
-
-  Future<void> getQuantity({required int? productId}) async {
-    int count = await databaseHelper.getProductQuantity(productId ?? 0);
-    debugPrint("The count is $count");
-    await getCartItems();
-    emit(state.copyWith(counter: count));
-  }
+  Future<void> getQuantity({required int? productId}) async {}
 
   Future<void> addItem({
     required int productId,
-    required String productImage,
-    required String productName,
-    required String discountedPrice,
-    required String regularPrice,
   }) async {
-    await databaseHelper.addItemToCart(
-      productId: productId,
-      productImage: productImage,
-      productName: productName,
-      discountedPrice: discountedPrice,
-      regularPrice: regularPrice,
-    );
-    await getCartItems();
-    await getQuantity(productId : productId);
+    try {
+      emit(
+        const FormStateApi(
+          formLoadingState: FormLoadingState.loading,
+          errorMessage: "",
+        ),
+      );
+      Map<String, dynamic>? response =
+          await AppNetworkCall.addToCart(productId: productId);
 
+      if ((response?["status"] == true)) {
+        emit(
+          FormStateApi(
+            formLoadingState: FormLoadingState.success,
+            errorMessage: response?["message"] ?? "Product added to cart successfully.",
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        const FormStateApi(
+          formLoadingState: FormLoadingState.failure,
+          errorMessage: "Something went wrong",
+        ),
+      );
+    }
   }
 
-  Future<void> incrementQuantity(int id) async {
-    await databaseHelper.incrementQuantity(id);
-    await getCartItems();
-    await getQuantity(productId : id);
-  }
+  Future<void> incrementQuantity(int id) async {}
 
-  Future<void> decrementQuantity(int id) async {
-    await databaseHelper.decrementQuantity(id);
-    await getCartItems();
-    await getQuantity(productId : id);
-  }
+  Future<void> decrementQuantity(int id) async {}
 
   double calculateTotalPrice() {
-    final products = state.cartItems;
-    double total = 0;
-    for (var item in products) {
-      total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
-    }
-    return total;
+    // final products = state.cartItems;
+    // double total = 0;
+    // for (var item in products) {
+    //   total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
+    // }
+    // return total;
+    return 0;
   }
 
   double calculateNetPrice() {
-    final products = state.cartItems;
-    double total = 0;
-    double shippingCharge = 0;
-    for (var item in products) {
-      total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
-    }
-    return total + shippingCharge - calculateDiscountedPrice();
+    // final products = state.cartItems;
+    // double total = 0;
+    // double shippingCharge = 0;
+    // for (var item in products) {
+    //   total += (item.discountedPrice ?? 0) * (item.quantity ?? 0);
+    // }
+    // return total + shippingCharge - calculateDiscountedPrice();
+    return 0;
   }
 
   double calculateDiscountedPrice() {

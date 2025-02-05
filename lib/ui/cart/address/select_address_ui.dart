@@ -1,4 +1,3 @@
-import 'package:agriapp/data/data_source/local/database_helper/database_helper.dart';
 import 'package:agriapp/data/helper/barrel.dart';
 import 'package:agriapp/domain/blocs/state_api/form_state.dart';
 import 'package:agriapp/domain/blocs/state_api/state_api.dart';
@@ -97,7 +96,6 @@ class _AddressUiState extends State<AddressUi>
                   }
                   if (createOrderState.formLoadingState ==
                       FormLoadingState.success) {
-                    await DatabaseHelper.clearCart();
                     if (context.mounted) {
                       var snackBar = SnackBar(
                         content: Text(

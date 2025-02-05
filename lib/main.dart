@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 
-import 'data/data_source/local/database_helper/database_helper.dart';
 import 'data/helper/barrel.dart';
 import 'data/router/rounter_config.dart';
 import 'domain/blocs/address_cubit/address_cubit.dart';
@@ -17,7 +16,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PreferenceUtils preferenceUtils = PreferenceUtils();
   await preferenceUtils.init();
-  await DatabaseHelper.initDb();
   Bloc.observer = MyBlocObserver();
 
   runApp(const EntryPoint());
@@ -65,7 +63,7 @@ class _EntryPointState extends State<EntryPoint> {
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => CartItemCubit(databaseHelper: DatabaseHelper())..getCartItems(),
+            create: (context) => CartItemCubit(),
           ),
           BlocProvider(
             create: (context) => CategoryCubit()..allCategory(),
